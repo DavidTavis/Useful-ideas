@@ -26,7 +26,6 @@ public class AddQuote extends Activity {
     EditText etQuote;
     FloatingActionButton addQuote;
 
-//    public static Context context;
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
     View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -67,7 +66,6 @@ public class AddQuote extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_quote);
-//        context = getApplicationContext();
 
         etQuote = (EditText) findViewById(R.id.quote);
         addQuote = (FloatingActionButton) findViewById(R.id.add_quote);

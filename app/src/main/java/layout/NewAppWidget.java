@@ -26,7 +26,7 @@ public class NewAppWidget extends AppWidgetProvider {
     private static final String DELETE_QUOTE    = "ButtonClickDelete";
 
     private static CharSequence widgetText;
-    int mAppWidgetId;
+    private int mAppWidgetId;
     private MediaPlayer mp;
 
     public void playSound(Context context){
@@ -52,14 +52,11 @@ public class NewAppWidget extends AppWidgetProvider {
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-        Log.d(LOG_TAG,"onReceive mAppWidgetId = " + mAppWidgetId);
 
-        Toast.makeText(context, "onReceive", Toast.LENGTH_SHORT).show();
         //Обработка нажатия "Следующая цитата"
         if (NEXT_CLICKED.equals(intent.getAction()) && extras != null) {
 
             Log.d(LOG_TAG,"NEXT_CLICKED");
-//            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
             MyDBHelper myDBHelper = new MyDBHelper(context);
@@ -76,7 +73,6 @@ public class NewAppWidget extends AppWidgetProvider {
         }else if(PREV_CLICKED.equals(intent.getAction()) && extras != null) {
 
             Log.d(LOG_TAG,"PREV_CLICKED");
-//            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
             MyDBHelper myDBHelper = new MyDBHelper(context);
@@ -91,7 +87,6 @@ public class NewAppWidget extends AppWidgetProvider {
         //Обработка нажатия "Удаление цитаты"
         }else if (DELETE_QUOTE.equals(intent.getAction())) {
 
-//            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
             MyDBHelper myDBHelper = new MyDBHelper(context);
@@ -114,12 +109,10 @@ public class NewAppWidget extends AppWidgetProvider {
     }
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
-        MyDBHelper myDBHelper = new MyDBHelper(context);
         Log.d(LOG_TAG,"onDeleted");
         // При удалении цитаты, удаляем данные из SharedPreferences
-        for (int appWidgetId : appWidgetIds) {
-            myDBHelper.deleteTitlePref(context, appWidgetId);
-        }
+        MyDBHelper myDBHelper = new MyDBHelper(context);
+        myDBHelper.deleteTitlePref(context);
     }
     @Override
     public void onEnabled(Context context){
@@ -127,20 +120,17 @@ public class NewAppWidget extends AppWidgetProvider {
     }
     @Override
     public void onDisabled(Context context) {
+        Log.d(LOG_TAG,"onDisabled");
         // Закрываем базу и очищаем таблицу
         MyDBHelper myDBHelper = new MyDBHelper(context);
         myDBHelper.clearTable();
         myDBHelper.close();
-        Log.d(LOG_TAG,"onDisabled");
     }
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
         MyDBHelper myDBHelper = new MyDBHelper(context);
         widgetText = myDBHelper.getCurrentQuote();
-
-        Log.d(LOG_TAG,"updateAppWidget widgetText = " + widgetText);
-        Log.d(LOG_TAG,"updateAppWidget appWidgetId = " + appWidgetId);
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);

@@ -21,18 +21,7 @@ public class BootReceiver extends BroadcastReceiver {
         Bundle extras = intent.getExtras();
 
         if (extras != null) {
-//            MyDBHelper myDBHelper = new MyDBHelper(context);
-//            String currentQuote = myDBHelper.getCurrentQuote();
-//            Log.d(InfoActivity.LOG_TAG,"BootReceiver getCurrentQuote = " + currentQuote);
-
-//            String firstQuote = myDBHelper.getFirstQuote();
-//            Log.d(InfoActivity.LOG_TAG,"BootReceiver getFirstQuote = " + firstQuote);
-
             int mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-//            Log.d(InfoActivity.LOG_TAG,"BootReceiver appWidgetId = " + mAppWidgetId);
-//            MyDBHelper.setCurrentQuote(currentQuote);
-
-//            Toast.makeText(context, "currentQuote = " + currentQuote, Toast.LENGTH_SHORT).show();
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             NewAppWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
         }

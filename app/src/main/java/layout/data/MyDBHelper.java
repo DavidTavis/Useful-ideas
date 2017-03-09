@@ -242,10 +242,10 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return lastQuote;
     }
 
-    public void deleteTitlePref(Context context, int appWidgetId) {
+    public void deleteTitlePref(Context context) {
         Log.d(LOG_TAG,"MyDBHelper deleteTitlePref");
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREF_NAME, 0).edit();
-        prefs.remove(CURRENT_QUOTE + appWidgetId);
+        prefs.remove(CURRENT_QUOTE);
         prefs.apply();
     }
     public void clearTable(){
