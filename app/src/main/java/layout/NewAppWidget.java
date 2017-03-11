@@ -3,6 +3,7 @@ package layout;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -51,7 +52,6 @@ public class NewAppWidget extends AppWidgetProvider {
         Bundle extras = intent.getExtras();
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 
         //Обработка нажатия "Следующая цитата"
         if (NEXT_CLICKED.equals(intent.getAction()) && extras != null) {
@@ -103,8 +103,12 @@ public class NewAppWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d(LOG_TAG,"onUpdate");
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+        // Get all ids
+        ComponentName thisWidget = new ComponentName(context,
+                NewAppWidget.class);
+        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+        for (int widgetId : allWidgetIds) {
+            updateAppWidget(context, appWidgetManager, widgetId);
         }
     }
     @Override
