@@ -29,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="1dp"
+        android:onClick="onClick"
         android:src="@drawable/plus48"
         fab:fab_colorNormal="#68EFAD"
         fab:fab_colorPressed="#4DB6AC"

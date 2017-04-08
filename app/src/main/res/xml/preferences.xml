@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:auto="http://schemas.android.com/apk/res-auto">
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_sound_use"
+        android:summary="Use sound when you press the buttons"
+        android:title="@string/pref_sound_use" />
+    <layout.ExtraRingtonePreference
+        android:key="ringtone"
+        android:title="Choose sound"
+        android:summary="%s"
+        auto:ringtoneType="notification"
+        android:defaultValue="content://settings/system/notification_sound"
+        auto:showSilent="true"
+        auto:showDefault="true"
+        auto:extraRingtones="@array/extraRingtones"
+        auto:extraRingtoneTitles="@array/extraRingtoneTitles"/>
+    <ListPreference
+        android:title="Update period  for widget"
+        android:summary="%s"
+        android:key="listPref"
+        android:entries="@array/listArray"
+        android:entryValues="@array/listValues"/>
+
+</PreferenceScreen>

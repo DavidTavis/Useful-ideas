@@ -1,12 +1,69 @@
 <resources>
-    <string name="app_name">Useful ideas</string>
+
+    <string name="silent">Silent</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string-array name="listArray">
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+        <item>3 hours</item>
+        <item>4 hours</item>
+        <item>5 hours</item>
+        <item>6 hours</item>
+        <item>7 hours</item>
+        <item>8 hours</item>
+        <item>9 hours</item>
+        <item>10 hours</item>
+        <item>24 hours</item>
+    </string-array>
+
+    <string-array name="listValues">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+        <item>180</item>
+        <item>240</item>
+        <item>300</item>
+        <item>360</item>
+        <item>420</item>
+        <item>480</item>
+        <item>540</item>
+        <item>600</item>
+        <item>1440</item>
+    </string-array>
+
+    <string-array name="extraRingtones">
+        <item>sound1</item>
+        <item>sound2</item>
+    </string-array>
+
+    <string-array name="extraRingtoneTitles">
+        <item>Din don</item>
+        <item>Shyk</item>
+    </string-array>
+
+    <string name="facebook_app_id">1695094564116509</string>
+    <string name="app_name">Your Rules</string>
     <string name="appwidget_text">IDEAS</string>
     <string name="configure">Please, type your idea</string>
     <string name="add_widget">Add idea</string>
     <string name="Next">next</string>
     <string name="pref_name">com.example.david.PREFERENCE_FILE_KEY</string>
     <string name="about_title">Add new quote</string>
-    <string name="description">Привет.\n    Useful ideas - это приложение представляет собой виджет, который ты можешь разместить на свой экран.\n    Виджет содержит определенный набор тезисов, которые могут быть полезны для тебя. Приложение позволяет просматривать тезисы (кнопками вправо, влево), добавлять новые тезисы (кнопка +), и удалять существующие (кнопка -).\n    Один раз в день виджет обновляется, и на экране отображается новый тезис. Виджету можно придать подходящий размер, зажав его на пару секунд. </string>
+    <string name="pref_sound_use">Sound</string>
+    <string name="pref_sync_summ">Use sound</string>
+    <string name="pref_sound_category">Button sounds</string>
+
+    <string name="description"> Your rules - это приложение-виджет, которое содержит определенный набор тезисов. Приложение позволяет просматривать тезисы (кнопками вправо, влево), добавлять новые тезисы (кнопка +), и удалять существующие (кнопка -). Также возможно поделиться понравившемся тезисом с друзьями в Facebook.\n </string>
+
 
     <string-array name="array_quotes">
         <item>Каждый день это новый старт. Не привязывайтесь к тому, что произошло вчера, позавчера или позже. Сегодня новая жизнь и даже если что-то раньше было не так — вы обязательно будете пробовать снова и снова.</item>

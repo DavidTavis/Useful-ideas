@@ -14,6 +14,8 @@ import com.example.david.mywidgetnewattempt.R;
 
 import java.io.IOException;
 
+import layout.InfoActivity;
+
 /**
  * Created by TechnoA on 11.02.2017.
  */
@@ -35,12 +37,12 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = context;
-        Log.d(LOG_TAG,"MyDBHelper Constructor");
+//        Log.d(LOG_TAG,"MyDBHelper Constructor");
 
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(LOG_TAG,"MyDBHelper onCreate");
+//        Log.d(LOG_TAG,"MyDBHelper onCreate");
         // Строка для создания таблицы
         String SQL_CREATE_GUESTS_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -51,13 +53,13 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(LOG_TAG,"MyDBHelper onUpgrade");
+//        Log.d(LOG_TAG,"MyDBHelper onUpgrade");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 
     public void writeQuoteToDBSQLite(String quote) {
-        Log.d(LOG_TAG,"MyDBHelper writeQuoteToDBSQLite");
+//        Log.d(LOG_TAG,"MyDBHelper writeQuoteToDBSQLite");
         SQLiteDatabase db = getWritableDatabase();
 
         boolean quoteIsExist = checkQuoteIsExist(quote);
@@ -67,34 +69,27 @@ public class MyDBHelper extends SQLiteOpenHelper {
         }
         ContentValues values = new ContentValues();
         values.put(MyDBHelper.COLUMN_QUOTE, quote);
-
         db.insert(MyDBHelper.TABLE_NAME, null, values);
-
         setCurrentQuote(quote);
 
     }
 
-    public String deleteQuote(){
-        Log.d(LOG_TAG,"MyDBHelper deleteQuote");
+    public void deleteQuote(){
+//        Log.d(LOG_TAG,"MyDBHelper deleteQuote");
         String quoteForDelete = getCurrentQuote();
-
-        String nextQuote = nextQuote();
-
+        nextQuote();
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL(" DELETE FROM " + TABLE_NAME + " WHERE " + COLUMN_QUOTE + "=\"" + quoteForDelete + "\";");
-
-        return nextQuote;
     }
-    public String prevQuote(){
-        Log.d(LOG_TAG,"MyDBHelper prevQuote");
+    public void prevQuote(){
+//        Log.d(LOG_TAG,"MyDBHelper prevQuote");
         String currentQuote = getCurrentQuote();
         String prevQuote = getQuoteBeforeCurrent(currentQuote);
         setCurrentQuote(prevQuote);
-        return prevQuote;
     }
     public String getQuoteBeforeCurrent(String quote){
 
-        Log.d(LOG_TAG,"MyDBHelper getQuoteBeforeCurrent");
+//        Log.d(LOG_TAG,"MyDBHelper getQuoteBeforeCurrent");
         String prevQuote = "Prev quote";
 
         int countRows = getTableSize();
@@ -123,16 +118,15 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return prevQuote;
     }
 
-    public String nextQuote(){
+    public void nextQuote(){
         Log.d(LOG_TAG,"MyDBHelper nextQuote");
         String currentQuote = getCurrentQuote();
         String nextQuote = getQuoteAfterCurrent(currentQuote);
         setCurrentQuote(nextQuote);
-        return nextQuote;
     }
     public String getQuoteAfterCurrent(String quote){
 
-        Log.d(LOG_TAG,"MyDBHelper getQuoteAfterCurrent");
+//        Log.d(LOG_TAG,"MyDBHelper getQuoteAfterCurrent");
         String nextQuote = "Next quote";
 
         int countRows = getTableSize();
@@ -163,13 +157,13 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
 
     public static void setCurrentQuote( String quote){
-        Log.d(LOG_TAG,"MyDBHelper setCurrentQuote");
+//        Log.d(LOG_TAG,"MyDBHelper setCurrentQuote");
         SharedPreferences.Editor editor = mContext.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE).edit();
         editor.putString(CURRENT_QUOTE,quote);
         editor.commit();
     }
     public String getCurrentQuote(){
-        Log.d(LOG_TAG,"MyDBHelper getCurrentQuote");
+//        Log.d(LOG_TAG,"MyDBHelper getCurrentQuote");
         if(mContext == null){
             Log.d(LOG_TAG,"mContext == null");
             return "";
@@ -181,7 +175,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
 
     public boolean checkQuoteIsExist(String quote){
-        Log.d(LOG_TAG,"MyDBHelper checkQuoteIsExist");
+//        Log.d(LOG_TAG,"MyDBHelper checkQuoteIsExist");
         boolean exist = false;
 
         SQLiteDatabase db = getReadableDatabase();
@@ -203,7 +197,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return exist;
     }
     public int getTableSize(){
-        Log.d(LOG_TAG,"MyDBHelper getTableSize");
+//        Log.d(LOG_TAG,"MyDBHelper getTableSize");
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
         int count = cursor.getCount();
@@ -211,7 +205,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return count;
     }
     public int getCurrentID(String quote){
-        Log.d(LOG_TAG,"MyDBHelper getCurrentID");
+//        Log.d(LOG_TAG,"MyDBHelper getCurrentID");
         int currentID = 1;
         SQLiteDatabase db = getReadableDatabase();
         String query = " SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_QUOTE + " = ?";
@@ -224,7 +218,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
 
     public String getFirstQuote(){
-        Log.d(LOG_TAG,"MyDBHelper getFirstQuote");
+//        Log.d(LOG_TAG,"MyDBHelper getFirstQuote");
         SQLiteDatabase db = getReadableDatabase();
         String query = "SELECT " + COLUMN_QUOTE +  ", MIN(_ID)  FROM " + TABLE_NAME ;
         Cursor cursor = db.rawQuery(query,null);
@@ -233,7 +227,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         return firstQuote;
     }
     public String getLastQuote(){
-        Log.d(LOG_TAG,"MyDBHelper getLastQuote");
+//        Log.d(LOG_TAG,"MyDBHelper getLastQuote");
         SQLiteDatabase db = getReadableDatabase();
         String query = "SELECT " + COLUMN_QUOTE +  ", MAX(_ID)  FROM " + TABLE_NAME ;
         Cursor cursor = db.rawQuery(query,null);
@@ -243,13 +237,14 @@ public class MyDBHelper extends SQLiteOpenHelper {
     }
 
     public void deleteTitlePref(Context context) {
-        Log.d(LOG_TAG,"MyDBHelper deleteTitlePref");
+//        Log.d(LOG_TAG,"MyDBHelper deleteTitlePref");
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREF_NAME, 0).edit();
         prefs.remove(CURRENT_QUOTE);
+        prefs.remove(InfoActivity.TRANSPARENCY);
         prefs.apply();
     }
     public void clearTable(){
-        Log.d(LOG_TAG,"MyDBHelper clearTable");
+//        Log.d(LOG_TAG,"MyDBHelper clearTable");
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_NAME,null,null);
     }

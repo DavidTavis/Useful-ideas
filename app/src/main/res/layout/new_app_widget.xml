@@ -1,5 +1,6 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutWidget"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/rectangle_rounded_layout"
@@ -38,6 +39,23 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
+        <ImageButton
+            android:id="@+id/btnInfo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_button"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="1dp"
+            android:src="@drawable/information48"/>
+
+        <ImageButton
+            android:id="@+id/btnFacebook"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_button"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="1dp"
+            android:src="@drawable/facebook"/>
 
         <ImageButton
             android:id="@+id/btnDelete"
@@ -46,8 +64,8 @@
             android:background="@drawable/bg_button"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="1dp"
-
             android:src="@drawable/minus48"/>
+
         <ImageButton
             android:id="@+id/btnAdd"
             android:layout_width="40dp"
@@ -56,6 +74,7 @@
             android:layout_marginRight="5dp"
             android:layout_marginBottom="1dp"
             android:src="@drawable/plus48"/>
+
         <ImageButton
             android:id="@+id/btnPrev"
             android:layout_width="40dp"

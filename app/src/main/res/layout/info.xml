@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#AB47BC"
+    android:background="#EA80FC"
     android:elevation="5dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -14,16 +14,33 @@
         android:paddingTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorWhite"
-        android:id="@+id/textView" />
+        android:textColor="#424242"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <LinearLayout
+        android:id="@+id/container"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/textView"
+        android:layout_height="wrap_content">
+    </LinearLayout>
+
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/btnOk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onClick"
         android:layout_gravity="bottom|right"
-        android:layout_margin="1dp"
         android:src="@drawable/plus48"
         fab:fab_colorNormal="#68EFAD"
         fab:fab_colorPressed="#4DB6AC"
-        fab:fab_colorRipple="#4DB6AC" />
-</LinearLayout>
+        fab:fab_colorRipple="#4DB6AC"
+        android:layout_marginRight="4dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
