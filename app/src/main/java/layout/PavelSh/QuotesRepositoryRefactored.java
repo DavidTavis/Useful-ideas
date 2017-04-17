@@ -64,7 +64,7 @@ public class QuotesRepositoryRefactored {
 
         SQLiteDatabase db = sqlite.getWritableDatabase();
 
-        boolean quoteIsExist = checkQuoteIsExist(quote);
+        boolean quoteIsExist = isQuoteExists(quote);
         if(quoteIsExist)
             throw new InvalidParameterException("Qoute already exists.");
 
@@ -86,7 +86,7 @@ public class QuotesRepositoryRefactored {
         db.execSQL(query);
     }
 
-    private boolean checkQuoteIsExist(String quote){
+    private boolean isQuoteExists(String quote){
 
         SQLiteDatabase db = sqlite.getReadableDatabase();
 
