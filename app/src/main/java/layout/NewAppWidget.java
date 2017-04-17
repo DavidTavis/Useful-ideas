@@ -19,7 +19,7 @@ import com.example.david.mywidgetnewattempt.R;
 
 import java.io.IOException;
 
-import layout.data.MyDBHelper;
+import layout.data.MonitorQuotes;
 
 
 public class NewAppWidget extends AppWidgetProvider {
@@ -38,31 +38,15 @@ public class NewAppWidget extends AppWidgetProvider {
     private static CharSequence widgetText;
     private int mAppWidgetId;
 
-
-    private void playSound(Context context, Uri alert) {
-
-        MediaPlayer mMediaPlayer = new MediaPlayer();
-
-        try {
-            mMediaPlayer.setDataSource(context, alert);
-            final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            if (audioManager.getStreamVolume(AudioManager.STREAM_RING) != 0) {
-                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
-                mMediaPlayer.prepare();
-                mMediaPlayer.start();
-            }
-        } catch (IOException e) {
-            System.out.println("OOPS");
-        }
-    }
-
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, SharedPreferences sp, int appWidgetId) {
+    public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
         Log.d(LOG_TAG, "updateAppWidget");
-        MyDBHelper myDBHelper = new MyDBHelper(context);
-        widgetText = myDBHelper.getCurrentQuote();
 
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
+        QuotesRepository quotesRepository = getQuotesRepository(context);
+
+        widgetText = quotesRepository.getMonitorQuotes().getCurrentQuote();
+
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // Конфигурационное активити
@@ -120,78 +104,18 @@ public class NewAppWidget extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        Log.d(LOG_TAG, "onReceive");
-        Bundle extras = intent.getExtras();
 
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        Log.d(LOG_TAG, "onReceive");
+
+        QuotesRepository quotesRepository = getQuotesRepository(context);
+        QuotesRepository.MyDBHelper myDBHelper = quotesRepository.getMyDBHelper();
+        MonitorQuotes monitorQuotes = quotesRepository.getMonitorQuotes();
 
         //Обновление виджета по расписанию
-        if (intent.getAction().equalsIgnoreCase(UPDATE_ALL_WIDGETS)) {
-            ComponentName thisAppWidget = new ComponentName(context.getPackageName(), getClass().getName());
-            int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
-            MyDBHelper myDBHelper = new MyDBHelper(context);
-            myDBHelper.nextQuote();
-            for (int appWidgetID : ids) {
-                updateAppWidget(context, appWidgetManager, null, appWidgetID);
-            }
-        }
-
-        //Нахождение id виджета
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
-            if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-                return;
-            }
-        }
+        monitorQuotes.updateWidgetByScheduler(intent, myDBHelper);
 
         //Обработка нажатия кнопок
-        String str = intent.getStringExtra(KEY_UPDATE);
-        if(str!=null){
-           // определяем сигнал установленный в ringtone preferences и признак его использования
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-            String alarms = settings.getString("ringtone", "default ringtone");
-            Boolean useSound = settings.getBoolean("pref_sound_use",true);
-            Uri uri = Uri.parse(alarms);
-
-            MyDBHelper myDBHelper = new MyDBHelper(context);
-
-            switch (str){
-
-                //Обработка нажатия "Следующая цитата"
-                case(NEXT_CLICKED):
-                    Log.d(LOG_TAG, "NEXT_CLICKED");
-                    myDBHelper.nextQuote();
-                    updateAppWidget(context, appWidgetManager, null, mAppWidgetId);
-                    if (useSound) {
-                        playSound(context, uri);
-                    }
-                    break;
-
-                //Обработка нажатия "Предыдущая цитата"
-                case(PREV_CLICKED):
-                    Log.d(LOG_TAG, "PREV_CLICKED");
-                    myDBHelper.prevQuote();
-                    if (useSound) {
-                        playSound(context, uri);
-                    }
-                    updateAppWidget(context, appWidgetManager, null, mAppWidgetId);
-                    break;
-
-                //Обработка нажатия "Удаление цитаты"
-                case(DELETE_QUOTE):
-                    Log.d(LOG_TAG, "DELETE_QUOTE");
-                    myDBHelper.deleteQuote();
-                    if (useSound) {
-                        playSound(context, uri);
-                    }
-                    updateAppWidget(context, appWidgetManager, null, mAppWidgetId);
-                    break;
-
-            }
-
-        }
+        monitorQuotes.handleButtonClick(intent);
 
     }
 
@@ -200,37 +124,46 @@ public class NewAppWidget extends AppWidgetProvider {
         Log.d(LOG_TAG, "onUpdate");
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
-        SharedPreferences sp = context.getSharedPreferences(MyDBHelper.PREF_NAME, Context.MODE_PRIVATE);
-
         // обновляем все экземпляры
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, sp, appWidgetId);
+            updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         Log.d(LOG_TAG, "onDeleted");
+
+        QuotesRepository quotesRepository = getQuotesRepository(context);
         // При удалении виджета, удаляем данные из SharedPreferences
-        MyDBHelper myDBHelper = new MyDBHelper(context);
-        myDBHelper.deleteTitlePref(context);
+        quotesRepository.getMonitorQuotes().deleteTitlePref();
         // Очищаем таблицу и закрываем базу
-        myDBHelper.clearTable();
-        myDBHelper.close();
+        quotesRepository.getMyDBHelper().clearTable();
+        quotesRepository.getMyDBHelper().close();
     }
 
     @Override
     public void onEnabled(Context context) {
         Log.d(LOG_TAG, "onEnabled");
-        Util.scheduleUpdate(context);
+        Scheduler.scheduleUpdate(context);
     }
 
     @Override
     public void onDisabled(Context context) {
         Log.d(LOG_TAG, "onDisabled");
         //Отменяем обновление виджета
-        Util.clearUpdate(context);
+        Scheduler.clearUpdate(context);
 
+    }
+
+    public static QuotesRepository getQuotesRepository(Context context){
+        final GlobalClass globalVariable = (GlobalClass) context.getApplicationContext();
+        QuotesRepository quotesRepository = globalVariable.getQuotesRepository();
+        if(quotesRepository == null){
+            globalVariable.setQuotesRepository(new QuotesRepository(context));
+            quotesRepository = globalVariable.getQuotesRepository();
+        }
+        return quotesRepository;
     }
 
 }

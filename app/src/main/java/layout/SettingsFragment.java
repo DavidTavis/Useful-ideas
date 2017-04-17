@@ -3,7 +3,6 @@ package layout;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
@@ -39,7 +38,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (key.equals("listPref"))
         {
             Log.d(LOG_TAG,"SettingsFragment listPref listener");
-            Util.scheduleUpdate(getActivity());
+            Scheduler.scheduleUpdate(getActivity());
         }
     }
 

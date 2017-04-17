@@ -10,10 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.melnykov.fab.*;
 import com.example.david.mywidgetnewattempt.R;
 
-import layout.data.MyDBHelper;
 
 /**
  * Created by TechnoA on 22.02.2017.
@@ -30,21 +28,25 @@ public class AddQuote extends Activity {
         final Context context = getApplicationContext();
         String widgetText = etQuote.getText().toString();
 
+        final GlobalClass globalVariable = (GlobalClass) context.getApplicationContext();
+
+        QuotesRepository quotesRepository = globalVariable.getQuotesRepository();
+        if(quotesRepository == null){
+            globalVariable.setQuotesRepository(new QuotesRepository(context));
+            quotesRepository = globalVariable.getQuotesRepository();
+        }
+
         //добавляем цитату в таблицу
         if(!widgetText.equals("")) {
-            MyDBHelper myDBHelper = new MyDBHelper(context);
+            QuotesRepository.MyDBHelper myDBHelper = quotesRepository.getMyDBHelper();
             myDBHelper.writeQuoteToDBSQLite(widgetText);
         }else{
             Toast.makeText(AddQuote.this, "You have not typed a quote", Toast.LENGTH_SHORT).show();
         }
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        NewAppWidget.updateAppWidget(context, appWidgetManager, null, mAppWidgetId);
+        NewAppWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
 
-        Intent resultValue = new Intent();
-        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-        Log.d(LOG_TAG,"AddQuote mAppWidgetId = " + mAppWidgetId);
-        setResult(RESULT_OK, resultValue);
         finish();
     }
 

@@ -53,7 +53,7 @@
     <string name="facebook_app_id">1695094564116509</string>
     <string name="app_name">Your Rules</string>
     <string name="appwidget_text">IDEAS</string>
-    <string name="configure">Please, type your idea</string>
+    <string name="configure">Please, type your rules</string>
     <string name="add_widget">Add idea</string>
     <string name="Next">next</string>
     <string name="pref_name">com.example.david.PREFERENCE_FILE_KEY</string>

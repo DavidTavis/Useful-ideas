@@ -1,11 +1,9 @@
 package layout;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -18,18 +16,11 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.facebook.share.ShareApi;
-import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 
 import java.util.Arrays;
 import java.util.List;
-
-import layout.data.MyDBHelper;
 
 /**
  * Created by TechnoA on 30.03.2017.
@@ -48,7 +39,7 @@ public class ShareOnFacebook extends FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.verify_layout);
+        setContentView(R.layout.share_facebook);
         Log.d(LOG_TAG,"ShareOnFacebook onCreate");
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
@@ -86,8 +77,9 @@ public class ShareOnFacebook extends FragmentActivity {
     }
 
     public void shareMessageToFacebook() {
-        MyDBHelper myDBHelper = new MyDBHelper(getApplicationContext());
-        String quote = myDBHelper.getCurrentQuote();
+        QuotesRepository quotesRepository = getQuotesRepository(getApplicationContext());
+        String quote = quotesRepository.getMonitorQuotes().getCurrentQuote();
+
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             ShareLinkContent linkContent = new ShareLinkContent.Builder()
                     .setContentTitle("Your Rules")
@@ -99,6 +91,15 @@ public class ShareOnFacebook extends FragmentActivity {
         }
     }
 
+    public QuotesRepository getQuotesRepository(Context context){
+        final GlobalClass globalVariable = (GlobalClass) context.getApplicationContext();
+        QuotesRepository quotesRepository = globalVariable.getQuotesRepository();
+        if(quotesRepository == null){
+            globalVariable.setQuotesRepository(new QuotesRepository(context));
+            quotesRepository = globalVariable.getQuotesRepository();
+        }
+        return quotesRepository;
+    }
 
     @Override
     protected void onResume() {
@@ -115,8 +116,7 @@ public class ShareOnFacebook extends FragmentActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int responseCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int responseCode, Intent data) {
         super.onActivityResult(requestCode, responseCode, data);
         callbackManager.onActivityResult(requestCode, responseCode, data);
         Log.d(LOG_TAG," onActivityResult");

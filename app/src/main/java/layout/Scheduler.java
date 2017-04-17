@@ -12,7 +12,7 @@ import android.util.Log;
  * Created by TechnoA on 08.04.2017.
  */
 
-public class Util {
+public class Scheduler {
 
     public static final String LOG_TAG = "MyLogWidget";
 

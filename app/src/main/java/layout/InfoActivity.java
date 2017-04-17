@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 import com.example.david.mywidgetnewattempt.R;
 
-import layout.data.MyDBHelper;
-
 /**
  * Created by TechnoA on 01.03.2017.
  */
@@ -25,17 +23,26 @@ public class InfoActivity extends Activity{
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     public static final String LOG_TAG = "MyLogWidget";
     public static final String TRANSPARENCY = "Transparency";
-    public static MyDBHelper myDBHelper;
 
     public void onClick(View v){
 
         final Context context = getApplicationContext();
 
+
+
         //заполняем таблицу цитатами
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                myDBHelper = new MyDBHelper(context);
+
+                final GlobalClass globalVariable = (GlobalClass) context;
+                QuotesRepository quotesRepository = globalVariable.getQuotesRepository();
+                if(quotesRepository == null){
+                    globalVariable.setQuotesRepository(new QuotesRepository(context));
+                    quotesRepository = globalVariable.getQuotesRepository();
+                }
+
+                QuotesRepository.MyDBHelper myDBHelper = quotesRepository.getMyDBHelper();
                 if (myDBHelper.getTableSize() == 0) {
                     String[] quotes = context.getResources().getStringArray(R.array.array_quotes);
                     for (String myQuote : quotes) {
@@ -44,8 +51,7 @@ public class InfoActivity extends Activity{
                     myDBHelper.nextQuote();
                     //Обновляем виджет
                     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                    SharedPreferences sp = context.getSharedPreferences(MyDBHelper.PREF_NAME,Context.MODE_PRIVATE);
-                    NewAppWidget.updateAppWidget(context, appWidgetManager, sp, mAppWidgetId);
+                    NewAppWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
                 }
             }
         });
