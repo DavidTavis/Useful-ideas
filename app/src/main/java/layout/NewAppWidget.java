@@ -19,6 +19,7 @@ import com.example.david.mywidgetnewattempt.R;
 
 import java.io.IOException;
 
+import layout.PavelSh.QuotesRepositoryRefactored;
 import layout.data.MonitorQuotes;
 
 
@@ -42,9 +43,9 @@ public class NewAppWidget extends AppWidgetProvider {
 
         Log.d(LOG_TAG, "updateAppWidget");
 
-        QuotesRepository quotesRepository = getQuotesRepository(context);
+        QuotesRepositoryRefactored quotesRepositoryRefactored = getQuotesRepositoryRefactored(context);
 
-        widgetText = quotesRepository.getMonitorQuotes().getCurrentQuote();
+        widgetText = quotesRepositoryRefactored.getMonitorQuotes().getCurrentQuote();
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
@@ -107,12 +108,11 @@ public class NewAppWidget extends AppWidgetProvider {
 
         Log.d(LOG_TAG, "onReceive");
 
-        QuotesRepository quotesRepository = getQuotesRepository(context);
-        QuotesRepository.MyDBHelper myDBHelper = quotesRepository.getMyDBHelper();
-        MonitorQuotes monitorQuotes = quotesRepository.getMonitorQuotes();
+        QuotesRepositoryRefactored quotesRepositoryRefactored = getQuotesRepositoryRefactored(context);
+        MonitorQuotes monitorQuotes = quotesRepositoryRefactored.getMonitorQuotes();
 
         //Обновление виджета по расписанию
-        monitorQuotes.updateWidgetByScheduler(intent, myDBHelper);
+        monitorQuotes.updateWidgetByScheduler(intent, quotesRepositoryRefactored);
 
         //Обработка нажатия кнопок
         monitorQuotes.handleButtonClick(intent);
@@ -134,12 +134,11 @@ public class NewAppWidget extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         Log.d(LOG_TAG, "onDeleted");
 
-        QuotesRepository quotesRepository = getQuotesRepository(context);
+        QuotesRepositoryRefactored quotesRepositoryRefactored = getQuotesRepositoryRefactored(context);
         // При удалении виджета, удаляем данные из SharedPreferences
-        quotesRepository.getMonitorQuotes().deleteTitlePref();
+        quotesRepositoryRefactored.getMonitorQuotes().deleteTitlePref();
         // Очищаем таблицу и закрываем базу
-        quotesRepository.getMyDBHelper().clearTable();
-        quotesRepository.getMyDBHelper().close();
+        quotesRepositoryRefactored.clearTable();
     }
 
     @Override
@@ -156,14 +155,9 @@ public class NewAppWidget extends AppWidgetProvider {
 
     }
 
-    public static QuotesRepository getQuotesRepository(Context context){
+    public static QuotesRepositoryRefactored getQuotesRepositoryRefactored(Context context){
         final GlobalClass globalVariable = (GlobalClass) context.getApplicationContext();
-        QuotesRepository quotesRepository = globalVariable.getQuotesRepository();
-        if(quotesRepository == null){
-            globalVariable.setQuotesRepository(new QuotesRepository(context));
-            quotesRepository = globalVariable.getQuotesRepository();
-        }
-        return quotesRepository;
+        return globalVariable.getQuotesRepositoryRefactored();
     }
 
 }
