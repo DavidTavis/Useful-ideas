@@ -5,8 +5,6 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.david.mywidgetnewattempt.R;
 
+import layout.models.QuoteModel;
 import layout.PavelSh.QuotesRepositoryRefactored;
 
 /**

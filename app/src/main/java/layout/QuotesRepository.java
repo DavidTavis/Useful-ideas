@@ -2,7 +2,6 @@ package layout;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -10,6 +9,7 @@ import android.provider.BaseColumns;
 import android.util.Log;
 import android.widget.Toast;
 
+import layout.models.QuoteModel;
 import layout.data.MonitorQuotes;
 
 /**

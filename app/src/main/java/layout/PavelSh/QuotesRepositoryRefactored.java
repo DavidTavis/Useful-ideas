@@ -6,11 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 import java.security.InvalidParameterException;
 
-import layout.QuoteModel;
+import layout.models.QuoteModel;
 import layout.data.MonitorQuotes;
 
 /**
@@ -87,6 +86,17 @@ public class QuotesRepositoryRefactored {
     }
 
     public QuoteModel findQuoteByID(long id){
+
+        return null;
+    }
+
+    // TODO: Реализуй эти методы
+    public QuoteModel getNextQoute(int currentQouteId) {
+
+        return null;
+    }
+
+    public QuoteModel getPrevQoute(int currentQouteId) {
 
         return null;
     }
