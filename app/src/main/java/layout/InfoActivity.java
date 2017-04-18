@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.example.david.mywidgetnewattempt.R;
 
+import layout.PavelSh.QuotesRepositoryRefactored;
+
 /**
  * Created by TechnoA on 01.03.2017.
  */
@@ -36,19 +38,13 @@ public class InfoActivity extends Activity{
             public void run() {
 
                 final GlobalClass globalVariable = (GlobalClass) context;
-                QuotesRepository quotesRepository = globalVariable.getQuotesRepository();
-                if(quotesRepository == null){
-                    globalVariable.setQuotesRepository(new QuotesRepository(context));
-                    quotesRepository = globalVariable.getQuotesRepository();
-                }
-
-                QuotesRepository.MyDBHelper myDBHelper = quotesRepository.getMyDBHelper();
-                if (myDBHelper.getTableSize() == 0) {
+                QuotesRepositoryRefactored quotesRepositoryRefactored = globalVariable.getQuotesRepositoryRefactored();
+                if (quotesRepositoryRefactored.getTableSize() == 0) {
                     String[] quotes = context.getResources().getStringArray(R.array.array_quotes);
                     for (String myQuote : quotes) {
-                        myDBHelper.writeQuoteToDBSQLite(myQuote);
+                        QuoteModel quoteModel = quotesRepositoryRefactored.addQuote(myQuote);
                     }
-                    myDBHelper.nextQuote();
+                    quotesRepositoryRefactored.nextQuote();
                     //Обновляем виджет
                     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                     NewAppWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);

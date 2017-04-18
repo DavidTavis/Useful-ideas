@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import layout.InfoActivity;
 import layout.NewAppWidget;
+import layout.PavelSh.QuotesRepositoryRefactored;
 import layout.QuotesRepository;
 
 /**
@@ -33,6 +34,7 @@ public class MonitorQuotes {
     public static final String UPDATE_ALL_WIDGETS = "update_all_widgets";
     public static final String PREF_NAME = "com.example.david.PREFERENCE_FILE_KEY";
     public static final String CURRENT_QUOTE = "current quote";
+    public static final String CURRENT_QUOTE_ID = "current quote id";
     public static final String RINGTONE = "ringtone";
     public static final String USE_SOUND = "pref_sound_use";
 
@@ -73,7 +75,7 @@ public class MonitorQuotes {
         prefs.apply();
     }
 
-    public void updateWidgetByScheduler(Intent intent, QuotesRepository.MyDBHelper myDBHelper) {
+    public void updateWidgetByScheduler(Intent intent, QuotesRepositoryRefactored quotesRepositoryRefactored) {
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
         //Обновление виджета по расписанию
@@ -81,7 +83,7 @@ public class MonitorQuotes {
             ComponentName thisAppWidget = new ComponentName(mContext.getPackageName(), getClass().getName());
             int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
 
-            myDBHelper.nextQuote();
+            quotesRepositoryRefactored.nextQuote();
             for (int appWidgetID : ids) {
                 NewAppWidget.updateAppWidget(mContext, appWidgetManager, appWidgetID);
             }
@@ -90,8 +92,7 @@ public class MonitorQuotes {
 
     public void handleButtonClick(Intent intent){
 
-        QuotesRepository quotesRepository = NewAppWidget.getQuotesRepository(mContext);
-        QuotesRepository.MyDBHelper myDBHelper = quotesRepository.getMyDBHelper();
+        QuotesRepositoryRefactored quotesRepositoryRefactored = NewAppWidget.getQuotesRepositoryRefactored(mContext);
 
         int mAppWidgetId;
         Bundle extras = intent.getExtras();
@@ -120,7 +121,7 @@ public class MonitorQuotes {
                     //Обработка нажатия "Следующая цитата"
                     case (NEXT_CLICKED):
                         Log.d(LOG_TAG, "NEXT_CLICKED");
-                        myDBHelper.nextQuote();
+                        quotesRepositoryRefactored.nextQuote();
                         NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
                         if (useSound) {
                             playSound(mContext, uri);
@@ -130,7 +131,7 @@ public class MonitorQuotes {
                     //Обработка нажатия "Предыдущая цитата"
                     case (PREV_CLICKED):
                         Log.d(LOG_TAG, "PREV_CLICKED");
-                        myDBHelper.prevQuote();
+                        quotesRepositoryRefactored.prevQuote();
                         if (useSound) {
                             playSound(mContext, uri);
                         }
@@ -140,7 +141,7 @@ public class MonitorQuotes {
                     //Обработка нажатия "Удаление цитаты"
                     case (DELETE_QUOTE):
                         Log.d(LOG_TAG, "DELETE_QUOTE");
-                        myDBHelper.deleteQuote();
+                        quotesRepositoryRefactored.deleteQuote();
                         if (useSound) {
                             playSound(mContext, uri);
                         }
@@ -153,6 +154,9 @@ public class MonitorQuotes {
         }
     }
 
+    public void saveIDCurrentQuote(long id){
+
+    }
 
     public void playSound(Context context, Uri alert) {
 
