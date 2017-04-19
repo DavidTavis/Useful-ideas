@@ -19,7 +19,8 @@ import com.example.david.mywidgetnewattempt.R;
 
 import java.io.IOException;
 
-import layout.PavelSh.QuotesRepositoryRefactored;
+import layout.PavelSh.QuotesRepository;
+import layout.PavelSh.Utils;
 import layout.data.MonitorQuotes;
 
 
@@ -32,6 +33,7 @@ public class NewAppWidget extends AppWidgetProvider {
     private static final String PREV_CLICKED = "com.example.david.mywidgetnewattempt.ButtonClickPrev";
     private static final String DELETE_QUOTE = "com.example.david.mywidgetnewattempt.ButtonClickDelete";
     private static final String KEY_UPDATE = "UPDATE";
+
     private static final int VALUE_NEXT = 1;
     private static final int VALUE_PREV = 2;
     private static final int VALUE_DEL = 3;
@@ -43,7 +45,7 @@ public class NewAppWidget extends AppWidgetProvider {
 
         Log.d(LOG_TAG, "updateAppWidget");
 
-        widgetText = getGlobalVariable(context).getMonitorQuotes().getCurrentQuote();
+        widgetText = Utils.getGlobal(context).getMonitorQuotes().getCurrentQuote();
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
@@ -133,10 +135,9 @@ public class NewAppWidget extends AppWidgetProvider {
         Log.d(LOG_TAG, "onDeleted");
 
         // При удалении виджета, удаляем данные из SharedPreferences
-        getGlobalVariable(context).getMonitorQuotes().deleteTitlePref();
+        Utils.getGlobal(context).getMonitorQuotes().clearPreferences();
         // Очищаем таблицу и закрываем базу
-
-        getGlobalVariable(context).getQuotesRepositoryRefactored().clearTable();
+        Utils.getGlobal(context).getQuotesRepository().clearTable();
     }
 
     @Override
@@ -152,12 +153,6 @@ public class NewAppWidget extends AppWidgetProvider {
         Scheduler.clearUpdate(context);
 
     }
-
-    public static GlobalClass getGlobalVariable(Context context){
-        final GlobalClass globalVariable = (GlobalClass) context.getApplicationContext();
-        return globalVariable;
-    }
-
 
     public void updateWidgetByScheduler(Intent intent, Context mContext) {
 
@@ -195,9 +190,9 @@ public class NewAppWidget extends AppWidgetProvider {
             String str = intent.getStringExtra(KEY_UPDATE);
             if (str != null) {
                 // определяем сигнал установленный в ringtone preferences и признак его использования
-                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext);
-                String alarms = settings.getString(MonitorQuotes.RINGTONE, "default ringtone");
-                Boolean useSound = settings.getBoolean(MonitorQuotes.USE_SOUND, true);
+
+                String alarms = Utils.getGlobal(mContext).getSettings().setRingtone();
+                Boolean useSound = Utils.getGlobal(mContext).getSettings().getUseSound();
                 Uri uri = Uri.parse(alarms);
 
                 switch (str) {
@@ -238,6 +233,7 @@ public class NewAppWidget extends AppWidgetProvider {
         }
     }
 
+    // TODO: отпраь это в Utils.
     public void playSound(Context context, Uri alert) {
 
         MediaPlayer mMediaPlayer = new MediaPlayer();

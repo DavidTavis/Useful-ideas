@@ -22,7 +22,7 @@ import com.facebook.share.widget.ShareDialog;
 import java.util.Arrays;
 import java.util.List;
 
-import layout.PavelSh.QuotesRepositoryRefactored;
+import layout.PavelSh.QuotesRepository;
 
 /**
  * Created by TechnoA on 30.03.2017.
@@ -79,9 +79,8 @@ public class ShareOnFacebook extends FragmentActivity {
     }
 
     public void shareMessageToFacebook() {
-        QuotesRepositoryRefactored quotesRepositoryRefactored = getQuotesRepositoryRefactored(getApplicationContext());
-        String quote = quotesRepositoryRefactored.getMonitorQuotes().getCurrentQuote();
 
+        String quote = ((GlobalClass)getApplicationContext()).getMonitorQuotes().getCurrentQuote();
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             ShareLinkContent linkContent = new ShareLinkContent.Builder()
                     .setContentTitle("Your Rules")
@@ -91,11 +90,6 @@ public class ShareOnFacebook extends FragmentActivity {
                     .build();
             shareDialog.show(linkContent);
         }
-    }
-
-    public QuotesRepositoryRefactored getQuotesRepositoryRefactored(Context context){
-        final GlobalClass globalVariable = (GlobalClass) context.getApplicationContext();
-        return globalVariable.getQuotesRepositoryRefactored();
     }
 
     @Override

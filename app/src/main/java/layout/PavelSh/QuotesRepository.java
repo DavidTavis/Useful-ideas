@@ -16,14 +16,14 @@ import layout.data.MonitorQuotes;
  * Created by TechnoA on 17.04.2017.
  */
 
-public class QuotesRepositoryRefactored {
+public class QuotesRepository {
 
     private static final String TABLE_NAME = "quotes3";
     private static final String COLUMN_QUOTE = "quote";
     public static final String _ID = BaseColumns._ID;
     private SQLite sqlite;
 
-    public QuotesRepositoryRefactored(Context context) {
+    public QuotesRepository(Context context) {
 
         sqlite = new SQLite(context, TABLE_NAME);
     }
@@ -32,10 +32,12 @@ public class QuotesRepositoryRefactored {
 
         private static final String DATABASE_NAME = "Quotes.db";
         private static final int DATABASE_VERSION = 3;
+        private String tableName;
 
         public SQLite(Context context, String tableName) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
+            this.tableName = tableName;
             TraceUtils.LogInfo("Create SQLiteHelper");
         }
 
@@ -43,7 +45,6 @@ public class QuotesRepositoryRefactored {
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
             createDatabase(sqLiteDatabase, tableName);
-
         }
 
         @Override
@@ -65,6 +66,7 @@ public class QuotesRepositoryRefactored {
     }
 
     public QuoteModel addQuote(String quote) throws InvalidParameterException {
+
         TraceUtils.LogInfo("SQLite addQuote");
         SQLiteDatabase db = sqlite.getWritableDatabase();
 
@@ -125,7 +127,9 @@ public class QuotesRepositoryRefactored {
         return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
     }
 
+    // TODO: переименуй в Close
     public void clearTable(){
+
         TraceUtils.LogInfo("SQLite clearTable");
         SQLiteDatabase db = sqlite.getWritableDatabase();
         db.delete(TABLE_NAME,null,null);
@@ -186,7 +190,7 @@ public class QuotesRepositoryRefactored {
     private QuoteModel getQuoteModelByCursor(Cursor cursor){
 
         // TODO: Фигня какая-то написана. Переделай.
-        while (cursor.moveToNext()) {
+        if (cursor.moveToNext()) {
             // TODO: PavelSh - так?? или что имелось ввиду?
             String quote = cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE));
             long id = cursor.getLong(cursor.getColumnIndex(_ID));

@@ -27,19 +27,13 @@ import layout.NewAppWidget;
 /// Может также лежать в конетксте, но возможно им владеет только NewAppWidget.
 public class MonitorQuotesRefactored {
 
-    private static final String PREF_NAME = "com.example.david.PREFERENCE_FILE_KEY";
-    private static final String QUOTE_ID = "quote_id",
-                                QUOTE_TEXT = "quote_text";
-
     private CurrentQuoteChangedListener listener;
     private QuoteModel currentQuote;
-    private QuotesRepositoryRefactored repository;
     private Context context;
 
     public MonitorQuotesRefactored(Context context) {
 
         this.context = context;
-        repository = ((GlobalClass)context.getApplicationContext()).getQuotesRepositoryRefactored();
     }
 
     public void setCurrentQuoteChangedListener(CurrentQuoteChangedListener listener) {
@@ -54,34 +48,31 @@ public class MonitorQuotesRefactored {
         if(currentQuote != null)
             return currentQuote;
 
-        SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        long id = sharedPref.getLong(QUOTE_ID, -1);
-        String quote = sharedPref.getString(QUOTE_TEXT, "");
 
+        long id = Utils.getGlobal(context).getSettings().getQuoteId();
         if(id < 0)
             return null;
 
+        String quote = Utils.getGlobal(context).getSettings().getQuote();
         return new QuoteModel(quote, id);
     }
 
     public void nextQuote() {
 
-        QuoteModel nextQuote = repository.getNextQuote(currentQuote.getId());
+        QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().getNextQuote(currentQuote.getId());
         setCurrentQuote(nextQuote);
     }
 
     public void prevQuote() {
 
-        QuoteModel prevQoute = repository.getPrevQuote(currentQuote.getId());
+        QuoteModel prevQoute = Utils.getGlobal(context).getQuotesRepository().getPrevQuote(currentQuote.getId());
         setCurrentQuote(prevQoute);
     }
 
     private void setCurrentQuote(QuoteModel quote){
 
-        SharedPreferences.Editor editor = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit();
-        editor.putLong(QUOTE_ID, quote.getId());
-        editor.putString(QUOTE_TEXT, quote.getQuote());
-        editor.commit();
+        Utils.getGlobal(context).getSettings().setQuoteId(quote.getId());
+        Utils.getGlobal(context).getSettings().setQuote(quote.getQuote());
 
         currentQuote = quote;
         if(listener != null)

@@ -12,14 +12,15 @@ import android.widget.Toast;
 
 import com.example.david.mywidgetnewattempt.R;
 
+import layout.PavelSh.Utils;
 import layout.models.QuoteModel;
-import layout.PavelSh.QuotesRepositoryRefactored;
+import layout.PavelSh.QuotesRepository;
 
 /**
  * Created by TechnoA on 01.03.2017.
  */
 
-public class InfoActivity extends Activity{
+public class InfoActivity extends Activity {
 
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     public static final String LOG_TAG = "MyLogWidget";
@@ -29,15 +30,12 @@ public class InfoActivity extends Activity{
 
         final Context context = getApplicationContext();
 
-
-
         //заполняем таблицу цитатами
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
 
-                final GlobalClass globalVariable = (GlobalClass) context;
-                QuotesRepositoryRefactored quotesRepositoryRefactored = globalVariable.getQuotesRepositoryRefactored();
+                QuotesRepository quotesRepositoryRefactored = Utils.getGlobal(context).getQuotesRepository();
                 if (quotesRepositoryRefactored.getTableSize() == 0) {
                     String[] quotes = context.getResources().getStringArray(R.array.array_quotes);
                     for (String myQuote : quotes) {
