@@ -29,16 +29,16 @@ public class MonitorQuotesRefactored {
     private static final String QUOTE_ID = "quote_id",
                                 QUOTE_TEXT = "quote_text";
 
-    private CurrentQouteChangedListener listener;
+    private CurrentQuoteChangedListener listener;
     private Context context;
-    private QuoteModel currentQoute;
+    private QuoteModel currentQuote;
 
     public MonitorQuotesRefactored(Context context) {
 
         this.context = context;
     }
 
-    public void setCurrentQouteChangedListener(CurrentQouteChangedListener listener) {
+    public void setCurrentQuoteChangedListener(CurrentQuoteChangedListener listener) {
 
         this.listener = listener;
     }
@@ -47,14 +47,14 @@ public class MonitorQuotesRefactored {
 
         TraceUtils.LogInfo("MonitorQuotes getCurrentQuote");
 
-        // Warning! Стремный код!
+        // Warning! Стремный код!-------> Да. Это был костыль который нужно было убрать
         //if(mContext == null){
         //    Log.d(LOG_TAG,"mContext == null");
         //    return "";
         //}
 
-        if(currentQoute != null)
-            return currentQoute;
+        if(currentQuote != null)
+            return currentQuote;
 
         SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         long id = sharedPref.getLong(QUOTE_ID, -1);
@@ -66,10 +66,10 @@ public class MonitorQuotesRefactored {
         return new QuoteModel(quote, id);
     }
 
-    public void nextQoute() {
+    public void nextQuote() {
     }
 
-    public void prevQoute() {
+    public void prevQuote() {
     }
 
     private void setCurrentQuote(QuoteModel quote){
@@ -79,8 +79,8 @@ public class MonitorQuotesRefactored {
         editor.putString(QUOTE_TEXT, quote.getQuote());
         editor.commit();
 
-        currentQoute = quote;
+        currentQuote = quote;
         if(listener != null)
-            listener.onCurrentQouteChanged(currentQoute);
+            listener.onCurrentQuoteChanged(currentQuote);
     }
 }

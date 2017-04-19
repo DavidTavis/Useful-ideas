@@ -23,11 +23,14 @@ public class QuotesRepositoryRefactored {
     public static final String _ID = BaseColumns._ID;
     private SQLite sqlite;
     private MonitorQuotes monitorQuotes;
+    private MonitorQuotesRefactored monitorQuotesRefactored;
 
     public QuotesRepositoryRefactored(Context context) {
 
         sqlite = new SQLite(context, TABLE_NAME);
         monitorQuotes = new MonitorQuotes(context);
+        monitorQuotesRefactored = new MonitorQuotesRefactored(context);
+
     }
 
     public MonitorQuotes getMonitorQuotes() {
@@ -38,7 +41,7 @@ public class QuotesRepositoryRefactored {
 
         private static final String DATABASE_NAME = "Quotes.db";
         private static final int DATABASE_VERSION = 3;
-        private String tableName;
+        private String tableName;  // поле не используется. Удалить?
 
         public SQLite(Context context, String tableName) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -63,7 +66,7 @@ public class QuotesRepositoryRefactored {
         private void createDatabase(SQLiteDatabase db, String tableName) {
 
             TraceUtils.LogInfo("Drop Database.");
-            db.execSQL(String.format("DROP TABLE IF EXISTS %1", TABLE_NAME));
+            db.execSQL(String.format("DROP TABLE IF EXISTS %1;", TABLE_NAME));
             TraceUtils.LogInfo("Create Database.");
             String query = String.format("CREATE TABLE %1 (%2 INTEGER PRIMARY KEY AUTOINCREMENT, %3 TEXT NOT NULL);", TABLE_NAME, _ID, COLUMN_QUOTE);
             db.execSQL(query);
@@ -75,8 +78,8 @@ public class QuotesRepositoryRefactored {
         TraceUtils.LogInfo("SQLite addQuote");
         SQLiteDatabase db = sqlite.getWritableDatabase();
 
-        boolean quoteIsExist = checkQuoteIsExist(quote);
-        if(quoteIsExist)
+        boolean quoteIsExists = isQuoteExists(quote);
+        if(quoteIsExists)
             throw new InvalidParameterException("Quote already exists.");
 
         ContentValues values = new ContentValues();
@@ -87,28 +90,97 @@ public class QuotesRepositoryRefactored {
 
     public QuoteModel findQuoteByID(long id){
 
-        return null;
+        Cursor cursor = getCursor(id, " = ?");
+        return getQuoteModelByCursor(cursor);
+
     }
 
     // TODO: Реализуй эти методы
-    public QuoteModel getNextQoute(int currentQouteId) {
+    public QuoteModel getNextQuote(long currentQuoteId) {
+
+        Cursor cursor = getCursor(currentQuoteId, " > ?");
+
+        if(cursor.isAfterLast()){
+            return getFirstQuote();
+        }
+
+        return getQuoteModelByCursor(cursor);
+    }
+
+    public QuoteModel getPrevQuote(long currentQuoteId) {
+
+        Cursor cursor = getCursor(currentQuoteId, " < ?");
+
+        if(cursor.isAfterLast()){
+            return getLastQuote();
+        }
+
+        return getQuoteModelByCursor(cursor);
+
+    }
+
+    public void deleteQuote(long id){
+
+        SQLiteDatabase db = sqlite.getWritableDatabase();
+        String query = String.format("DELETE FROM %1 WHERE _id = %2;", TABLE_NAME, id);
+        db.execSQL(query);
+    }
+
+    public Cursor getCursor(long currentID, String condition){
+
+        SQLiteDatabase db = sqlite.getWritableDatabase();
+
+        String selection = null;
+        String[] selectionArgs = null;
+        String[] columns = null;
+
+        columns = new String[] { COLUMN_QUOTE };
+        selection = _ID + condition;
+        selectionArgs = new String[] { String.valueOf(currentID) };
+
+        return db.query(TABLE_NAME, columns, selection, selectionArgs, null, null,null);
+    }
+
+    public QuoteModel getQuoteModelByCursor(Cursor cursor){
+
+        while (cursor.moveToNext()) {
+
+            return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
+
+        }
 
         return null;
     }
 
-    public QuoteModel getPrevQoute(int currentQouteId) {
+    public QuoteModel getFirstQuote(){
+        TraceUtils.LogInfo("SQLite getFirstQuote");
 
-        return null;
+        SQLiteDatabase db = sqlite.getReadableDatabase();
+        String query = "SELECT " + COLUMN_QUOTE +  ", MIN(_ID)  FROM " + TABLE_NAME ;
+        Cursor cursor = db.rawQuery(query,null);
+        cursor.moveToFirst();
+
+        return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
     }
+    public QuoteModel getLastQuote(){
+        TraceUtils.LogInfo("SQLite getLastQuote");
 
-//    public void deleteQuote(int id){
-//
-//        SQLiteDatabase db = sqlite.getWritableDatabase();
-//        String query = String.format("DELETE FROM %1 WHERE _id = %2", TABLE_NAME, id);
-//        db.execSQL(query);
-//    }
+        SQLiteDatabase db = sqlite.getReadableDatabase();
+        String query = "SELECT " + COLUMN_QUOTE +  ", MAX(_ID)  FROM " + TABLE_NAME ;
+        Cursor cursor = db.rawQuery(query,null);
+        cursor.moveToFirst();
 
-    private boolean checkQuoteIsExist(String quote){
+        return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
+    }
+    public int getTableSize(){
+        TraceUtils.LogInfo("SQLite getTableSize");
+        SQLiteDatabase db = sqlite.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
+    private boolean isQuoteExists(String quote){
 
         SQLiteDatabase db = sqlite.getReadableDatabase();
 
@@ -123,96 +195,6 @@ public class QuotesRepositoryRefactored {
         Cursor cursor = db.query(TABLE_NAME, columns, selection, selectionArgs, null, null,null);
         return !cursor.isAfterLast();
     }
-
-    public void deleteQuote(){
-        TraceUtils.LogInfo("SQLite deleteQuote");
-        String quoteForDelete = monitorQuotes.getCurrentQuote();
-        nextQuote();
-        SQLiteDatabase db = sqlite.getWritableDatabase();
-        db.execSQL(" DELETE FROM " + TABLE_NAME + " WHERE " + COLUMN_QUOTE + "=\"" + quoteForDelete + "\";");
-    }
-
-    public void nextQuote(){
-        TraceUtils.LogInfo("SQLite nextQuote");
-        String currentQuote = monitorQuotes.getCurrentQuote();
-        String nextQuote = getQuoteAfterCurrent(currentQuote);
-        monitorQuotes.setCurrentQuote(nextQuote);
-    }
-
-    public String getQuoteAfterCurrent(String quote){
-        TraceUtils.LogInfo("SQLite getQuoteAfterCurrent");
-
-        String nextQuote = "Next quote";
-
-        int countRows = getTableSize();
-
-        int currentID = getCurrentID(quote);
-
-        SQLiteDatabase db = sqlite.getWritableDatabase();
-
-        String selection = null;
-        String[] selectionArgs = null;
-        String[] columns = null;
-
-        columns = new String[] { COLUMN_QUOTE };
-        selection = _ID +" > ?";
-        selectionArgs = new String[] { String.valueOf(currentID) };
-
-        Cursor cursor = db.query(TABLE_NAME, columns, selection, selectionArgs, null, null,null);
-
-        if(cursor.isAfterLast()){
-            nextQuote = getFirstQuote();
-        }
-
-        while (cursor.moveToNext()) {
-            nextQuote = cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE));
-            break;
-        }
-        return nextQuote;
-    }
-
-    public int getTableSize(){
-        TraceUtils.LogInfo("SQLite getTableSize");
-        SQLiteDatabase db = sqlite.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
-        int count = cursor.getCount();
-        cursor.close();
-        return count;
-    }
-
-    public int getCurrentID(String quote){
-        TraceUtils.LogInfo("SQLite getCurrentID");
-
-        int currentID = 1;
-        SQLiteDatabase db = sqlite.getReadableDatabase();
-        String query = " SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_QUOTE + " = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{quote});
-        int idColumnIndex = cursor.getColumnIndex(_ID);
-        while (cursor.moveToNext()) {
-            currentID = cursor.getInt(idColumnIndex);
-        }
-        return currentID;
-    }
-
-    public String getFirstQuote(){
-        TraceUtils.LogInfo("SQLite getFirstQuote");
-        SQLiteDatabase db = sqlite.getReadableDatabase();
-        String query = "SELECT " + COLUMN_QUOTE +  ", MIN(_ID)  FROM " + TABLE_NAME ;
-        Cursor cursor = db.rawQuery(query,null);
-        cursor.moveToFirst();
-        String firstQuote = cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE));
-        return firstQuote;
-    }
-    public String getLastQuote(){
-        TraceUtils.LogInfo("SQLite getLastQuote");
-        SQLiteDatabase db = sqlite.getReadableDatabase();
-        String query = "SELECT " + COLUMN_QUOTE +  ", MAX(_ID)  FROM " + TABLE_NAME ;
-        Cursor cursor = db.rawQuery(query,null);
-        cursor.moveToFirst();
-        String lastQuote = cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE));
-        return lastQuote;
-    }
-
     public void clearTable(){
         TraceUtils.LogInfo("SQLite clearTable");
         SQLiteDatabase db = sqlite.getWritableDatabase();
@@ -220,42 +202,7 @@ public class QuotesRepositoryRefactored {
         sqlite.close();
     }
 
-    public void prevQuote(){
-        TraceUtils.LogInfo("SQLite prevQuote");
-        String currentQuote = monitorQuotes.getCurrentQuote();
-        String prevQuote = getQuoteBeforeCurrent(currentQuote);
-        monitorQuotes.setCurrentQuote(prevQuote);
-    }
-    public String getQuoteBeforeCurrent(String quote){
-        TraceUtils.LogInfo("SQLite getQuoteBeforeCurrent");
 
-        String prevQuote = "Prev quote";
-
-        int countRows = getTableSize();
-
-        int currentID = getCurrentID(quote);
-
-        SQLiteDatabase db = sqlite.getWritableDatabase();
-
-        String selection = null;
-        String[] selectionArgs = null;
-        String[] columns = null;
-
-        columns = new String[] { COLUMN_QUOTE };
-        selection = _ID +" < ?";
-        selectionArgs = new String[] { String.valueOf(currentID) };
-
-        Cursor cursor = db.query(TABLE_NAME, columns, selection, selectionArgs, null, null,null);
-
-        if(cursor.isAfterLast()){
-            prevQuote = getLastQuote();
-        }
-
-        while (cursor.moveToNext()) {
-            prevQuote = cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE));
-        }
-        return prevQuote;
-    }
 
 
 }

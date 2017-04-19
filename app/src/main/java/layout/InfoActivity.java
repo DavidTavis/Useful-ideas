@@ -43,7 +43,7 @@ public class InfoActivity extends Activity{
                     for (String myQuote : quotes) {
                         QuoteModel quoteModel = quotesRepositoryRefactored.addQuote(myQuote);
                     }
-                    quotesRepositoryRefactored.nextQuote();
+//                    quotesRepositoryRefactored.nextQuote();
                     //Обновляем виджет
                     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                     NewAppWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);

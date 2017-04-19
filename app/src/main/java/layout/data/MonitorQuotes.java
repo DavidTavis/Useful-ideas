@@ -85,7 +85,7 @@ public class MonitorQuotes {
             ComponentName thisAppWidget = new ComponentName(mContext.getPackageName(), getClass().getName());
             int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
 
-            quotesRepositoryRefactored.nextQuote();
+//            quotesRepositoryRefactored.nextQuote();
             for (int appWidgetID : ids) {
                 NewAppWidget.updateAppWidget(mContext, appWidgetManager, appWidgetID);
             }
@@ -124,7 +124,7 @@ public class MonitorQuotes {
                     //Обработка нажатия "Следующая цитата"
                     case (NEXT_CLICKED):
                         Log.d(LOG_TAG, "NEXT_CLICKED");
-                        quotesRepositoryRefactored.nextQuote();
+//                        quotesRepositoryRefactored.nextQuote();
                         NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
                         if (useSound) {
                             playSound(mContext, uri);
@@ -134,7 +134,7 @@ public class MonitorQuotes {
                     //Обработка нажатия "Предыдущая цитата"
                     case (PREV_CLICKED):
                         Log.d(LOG_TAG, "PREV_CLICKED");
-                        quotesRepositoryRefactored.prevQuote();
+//                        quotesRepositoryRefactored.prevQuote();
                         if (useSound) {
                             playSound(mContext, uri);
                         }
@@ -144,7 +144,7 @@ public class MonitorQuotes {
                     //Обработка нажатия "Удаление цитаты"
                     case (DELETE_QUOTE):
                         Log.d(LOG_TAG, "DELETE_QUOTE");
-                        quotesRepositoryRefactored.deleteQuote();
+//                        quotesRepositoryRefactored.deleteQuote();
                         if (useSound) {
                             playSound(mContext, uri);
                         }
