@@ -108,9 +108,6 @@ public class NewAppWidget extends AppWidgetProvider {
 
         Log.d(LOG_TAG, "onReceive");
 
-//        QuotesRepositoryRefactored quotesRepositoryRefactored = getQuotesRepositoryRefactored(context);
-//        MonitorQuotes monitorQuotes = quotesRepositoryRefactored.getMonitorQuotes();
-
         //Обновление виджета по расписанию
         updateWidgetByScheduler(intent, context);
 
@@ -137,7 +134,7 @@ public class NewAppWidget extends AppWidgetProvider {
         // При удалении виджета, удаляем данные из SharedPreferences
         Utils.getGlobal(context).getMonitorQuotes().clearPreferences();
         // Очищаем таблицу и закрываем базу
-        Utils.getGlobal(context).getQuotesRepository().clearTable();
+        Utils.getGlobal(context).getQuotesRepository().close();
     }
 
     @Override
@@ -190,8 +187,9 @@ public class NewAppWidget extends AppWidgetProvider {
             String str = intent.getStringExtra(KEY_UPDATE);
             if (str != null) {
                 // определяем сигнал установленный в ringtone preferences и признак его использования
-
-                String alarms = Utils.getGlobal(mContext).getSettings().setRingtone();
+                // TODO: PavelSh вместо setRingtone() нужно getRingtone()
+//                String alarms = Utils.getGlobal(mContext).getSettings().setRingtone();
+                String alarms = Utils.getGlobal(mContext).getSettings().getRingtone();
                 Boolean useSound = Utils.getGlobal(mContext).getSettings().getUseSound();
                 Uri uri = Uri.parse(alarms);
 
@@ -203,7 +201,7 @@ public class NewAppWidget extends AppWidgetProvider {
 //                        quotesRepositoryRefactored.nextQuote();
                         NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
                         if (useSound) {
-                            playSound(mContext, uri);
+                            Utils.playSound(mContext, uri);
                         }
                         break;
 
@@ -212,7 +210,7 @@ public class NewAppWidget extends AppWidgetProvider {
                         Log.d(LOG_TAG, "PREV_CLICKED");
 //                        quotesRepositoryRefactored.prevQuote();
                         if (useSound) {
-                            playSound(mContext, uri);
+                            Utils.playSound(mContext, uri);
                         }
                         NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
                         break;
@@ -222,7 +220,7 @@ public class NewAppWidget extends AppWidgetProvider {
                         Log.d(LOG_TAG, "DELETE_QUOTE");
 //                        quotesRepositoryRefactored.deleteQuote();
                         if (useSound) {
-                            playSound(mContext, uri);
+                            Utils.playSound(mContext, uri);
                         }
                         NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
                         break;
@@ -233,22 +231,5 @@ public class NewAppWidget extends AppWidgetProvider {
         }
     }
 
-    // TODO: отпраь это в Utils.
-    public void playSound(Context context, Uri alert) {
-
-        MediaPlayer mMediaPlayer = new MediaPlayer();
-
-        try {
-            mMediaPlayer.setDataSource(context, alert);
-            final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            if (audioManager.getStreamVolume(AudioManager.STREAM_RING) != 0) {
-                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
-                mMediaPlayer.prepare();
-                mMediaPlayer.start();
-            }
-        } catch (IOException e) {
-            System.out.println("OOPS");
-        }
-    }
 }
 

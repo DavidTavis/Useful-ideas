@@ -127,9 +127,7 @@ public class QuotesRepository {
         return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
     }
 
-    // TODO: переименуй в Close
-    public void clearTable(){
-
+    public void close(){
         TraceUtils.LogInfo("SQLite clearTable");
         SQLiteDatabase db = sqlite.getWritableDatabase();
         db.delete(TABLE_NAME,null,null);
@@ -189,9 +187,7 @@ public class QuotesRepository {
 
     private QuoteModel getQuoteModelByCursor(Cursor cursor){
 
-        // TODO: Фигня какая-то написана. Переделай.
         if (cursor.moveToNext()) {
-            // TODO: PavelSh - так?? или что имелось ввиду?
             String quote = cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE));
             long id = cursor.getLong(cursor.getColumnIndex(_ID));
             return new QuoteModel(quote,id);

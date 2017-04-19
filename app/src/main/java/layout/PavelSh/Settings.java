@@ -16,10 +16,11 @@ public class Settings {
             USE_SOUND = "pref_sound_use";
 
     private Context context;
-
+    private SharedPreferences sharedPref;
     public Settings(Context context) {
 
         this.context = context;
+        this.sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }
 
     public String getQuote() {
@@ -30,38 +31,37 @@ public class Settings {
 
     public void setQuote(String quote) {
 
-        SharedPreferences.Editor editor = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(QUOTE_TEXT, quote);
         editor.commit();
     }
 
     public long getQuoteId() {
-
-        SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return sharedPref.getLong(QUOTE_ID, -1);
     }
 
     public void setQuoteId(long id) {
 
-        SharedPreferences.Editor editor = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = sharedPref.edit();
         editor.putLong(QUOTE_ID, id);
         editor.commit();
     }
 
-    // TODO: Доделай.
-    public long getRingtone() {
-        return -1;
+    public String getRingtone() {
+        return sharedPref.getString(RINGTONE,"default ringtone");
     }
 
+    // TODO: PavelSh не нужно устанавливать значение, так как при выборе оно уже записывается.
     public String setRingtone() {
         return "default ringtone";
     }
 
     public boolean getUseSound() {
-
-        return false;
+        SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(USE_SOUND,true);
     }
 
+    // TODO: PavelSh не нужно устанавливать значение, так как при выборе оно уже записывается.
     public void setUseSound() {
     }
 
