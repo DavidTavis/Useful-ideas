@@ -43,9 +43,7 @@ public class NewAppWidget extends AppWidgetProvider {
 
         Log.d(LOG_TAG, "updateAppWidget");
 
-        QuotesRepositoryRefactored quotesRepositoryRefactored = getQuotesRepositoryRefactored(context);
-
-        widgetText = quotesRepositoryRefactored.getMonitorQuotes().getCurrentQuote();
+        widgetText = getGlobalVariable(context).getMonitorQuotes().getCurrentQuote();
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
@@ -108,14 +106,14 @@ public class NewAppWidget extends AppWidgetProvider {
 
         Log.d(LOG_TAG, "onReceive");
 
-        QuotesRepositoryRefactored quotesRepositoryRefactored = getQuotesRepositoryRefactored(context);
-        MonitorQuotes monitorQuotes = quotesRepositoryRefactored.getMonitorQuotes();
+//        QuotesRepositoryRefactored quotesRepositoryRefactored = getQuotesRepositoryRefactored(context);
+//        MonitorQuotes monitorQuotes = quotesRepositoryRefactored.getMonitorQuotes();
 
         //Обновление виджета по расписанию
-        monitorQuotes.updateWidgetByScheduler(intent, quotesRepositoryRefactored);
+        updateWidgetByScheduler(intent, context);
 
         //Обработка нажатия кнопок
-        monitorQuotes.handleButtonClick(intent);
+        handleButtonClick(intent, context);
 
     }
 
@@ -134,13 +132,11 @@ public class NewAppWidget extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         Log.d(LOG_TAG, "onDeleted");
 
-        QuotesRepositoryRefactored quotesRepositoryRefactored = getQuotesRepositoryRefactored(context);
-
-
         // При удалении виджета, удаляем данные из SharedPreferences
-        quotesRepositoryRefactored.getMonitorQuotes().deleteTitlePref();
+        getGlobalVariable(context).getMonitorQuotes().deleteTitlePref();
         // Очищаем таблицу и закрываем базу
-        quotesRepositoryRefactored.clearTable();
+
+        getGlobalVariable(context).getQuotesRepositoryRefactored().clearTable();
     }
 
     @Override
@@ -157,10 +153,106 @@ public class NewAppWidget extends AppWidgetProvider {
 
     }
 
-    public static QuotesRepositoryRefactored getQuotesRepositoryRefactored(Context context){
+    public static GlobalClass getGlobalVariable(Context context){
         final GlobalClass globalVariable = (GlobalClass) context.getApplicationContext();
-        return globalVariable.getQuotesRepositoryRefactored();
+        return globalVariable;
     }
 
+
+    public void updateWidgetByScheduler(Intent intent, Context mContext) {
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+        //Обновление виджета по расписанию
+        if (intent.getAction().equalsIgnoreCase(UPDATE_ALL_WIDGETS)) {
+            ComponentName thisAppWidget = new ComponentName(mContext.getPackageName(), getClass().getName());
+            int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
+
+//            quotesRepositoryRefactored.nextQuote();
+            for (int appWidgetID : ids) {
+                NewAppWidget.updateAppWidget(mContext, appWidgetManager, appWidgetID);
+            }
+        }
+    }
+
+    public void handleButtonClick(Intent intent, Context mContext){
+
+//        QuotesRepositoryRefactored quotesRepositoryRefactored = NewAppWidget.getQuotesRepositoryRefactored(mContext);
+
+        int mAppWidgetId;
+        Bundle extras = intent.getExtras();
+
+        //Нахождение id виджета
+        if (extras != null) {
+            mAppWidgetId = extras.getInt(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
+            if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+                return;
+            }
+
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+            String str = intent.getStringExtra(KEY_UPDATE);
+            if (str != null) {
+                // определяем сигнал установленный в ringtone preferences и признак его использования
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext);
+                String alarms = settings.getString(MonitorQuotes.RINGTONE, "default ringtone");
+                Boolean useSound = settings.getBoolean(MonitorQuotes.USE_SOUND, true);
+                Uri uri = Uri.parse(alarms);
+
+                switch (str) {
+
+                    //Обработка нажатия "Следующая цитата"
+                    case (NEXT_CLICKED):
+                        Log.d(LOG_TAG, "NEXT_CLICKED");
+//                        quotesRepositoryRefactored.nextQuote();
+                        NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
+                        if (useSound) {
+                            playSound(mContext, uri);
+                        }
+                        break;
+
+                    //Обработка нажатия "Предыдущая цитата"
+                    case (PREV_CLICKED):
+                        Log.d(LOG_TAG, "PREV_CLICKED");
+//                        quotesRepositoryRefactored.prevQuote();
+                        if (useSound) {
+                            playSound(mContext, uri);
+                        }
+                        NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
+                        break;
+
+                    //Обработка нажатия "Удаление цитаты"
+                    case (DELETE_QUOTE):
+                        Log.d(LOG_TAG, "DELETE_QUOTE");
+//                        quotesRepositoryRefactored.deleteQuote();
+                        if (useSound) {
+                            playSound(mContext, uri);
+                        }
+                        NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
+                        break;
+
+                }
+
+            }
+        }
+    }
+
+    public void playSound(Context context, Uri alert) {
+
+        MediaPlayer mMediaPlayer = new MediaPlayer();
+
+        try {
+            mMediaPlayer.setDataSource(context, alert);
+            final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager.getStreamVolume(AudioManager.STREAM_RING) != 0) {
+                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
+                mMediaPlayer.prepare();
+                mMediaPlayer.start();
+            }
+        } catch (IOException e) {
+            System.out.println("OOPS");
+        }
+    }
 }
 
