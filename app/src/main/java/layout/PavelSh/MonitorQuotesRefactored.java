@@ -70,8 +70,6 @@ public class MonitorQuotesRefactored {
         setCurrentQuote(nextQuote);
     }
 
-    // TODO: Реализация переключения тезисов.
-    // TODO: PavelSh - Что делать?? Не понял.....
     public void prevQuote() {
 
         QuoteModel prevQoute = repository.getPrevQuote(currentQuote.getId());

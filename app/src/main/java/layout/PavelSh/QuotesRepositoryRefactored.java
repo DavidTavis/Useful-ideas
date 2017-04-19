@@ -22,32 +22,16 @@ public class QuotesRepositoryRefactored {
     private static final String COLUMN_QUOTE = "quote";
     public static final String _ID = BaseColumns._ID;
     private SQLite sqlite;
-    private MonitorQuotes monitorQuotes;
-
-    // TODO: Убить.
-//    private MonitorQuotesRefactored monitorQuotesRefactored;
 
     public QuotesRepositoryRefactored(Context context) {
 
         sqlite = new SQLite(context, TABLE_NAME);
-        monitorQuotes = new MonitorQuotes(context);
-        // TODO: Это здесь не нужно.
-//        monitorQuotesRefactored = new MonitorQuotesRefactored(context);
-
     }
-
-    // TODO: Реализовать доступ к этому объектоу ч-з контекст.
-    // TODO: PavelSh добавил в GlobalClass
-//    public MonitorQuotes getMonitorQuotes() {
-//        return monitorQuotes;
-//    }
 
     private class SQLite extends SQLiteOpenHelper {
 
         private static final String DATABASE_NAME = "Quotes.db";
         private static final int DATABASE_VERSION = 3;
-        // TODO: PavelSh  tableName поле не используется. Удалить?
-        private String tableName;
 
         public SQLite(Context context, String tableName) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -203,11 +187,9 @@ public class QuotesRepositoryRefactored {
 
         // TODO: Фигня какая-то написана. Переделай.
         while (cursor.moveToNext()) {
-
             // TODO: PavelSh - так?? или что имелось ввиду?
             String quote = cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE));
             long id = cursor.getLong(cursor.getColumnIndex(_ID));
-
             return new QuoteModel(quote,id);
         }
         return null;
