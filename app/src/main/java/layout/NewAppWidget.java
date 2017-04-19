@@ -135,6 +135,8 @@ public class NewAppWidget extends AppWidgetProvider {
         Log.d(LOG_TAG, "onDeleted");
 
         QuotesRepositoryRefactored quotesRepositoryRefactored = getQuotesRepositoryRefactored(context);
+
+
         // При удалении виджета, удаляем данные из SharedPreferences
         quotesRepositoryRefactored.getMonitorQuotes().deleteTitlePref();
         // Очищаем таблицу и закрываем базу

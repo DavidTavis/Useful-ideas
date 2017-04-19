@@ -23,16 +23,20 @@ public class QuotesRepositoryRefactored {
     public static final String _ID = BaseColumns._ID;
     private SQLite sqlite;
     private MonitorQuotes monitorQuotes;
+
+    // TODO: Убить.
     private MonitorQuotesRefactored monitorQuotesRefactored;
 
     public QuotesRepositoryRefactored(Context context) {
 
         sqlite = new SQLite(context, TABLE_NAME);
         monitorQuotes = new MonitorQuotes(context);
+        // TODO: Это здесь не нужно.
         monitorQuotesRefactored = new MonitorQuotesRefactored(context);
 
     }
 
+    // TODO: Реализовать доступ к этому объектоу ч-з контекст.
     public MonitorQuotes getMonitorQuotes() {
         return monitorQuotes;
     }
@@ -95,7 +99,6 @@ public class QuotesRepositoryRefactored {
 
     }
 
-    // TODO: Реализуй эти методы
     public QuoteModel getNextQuote(long currentQuoteId) {
 
         Cursor cursor = getCursor(currentQuoteId, " > ?");
@@ -126,45 +129,26 @@ public class QuotesRepositoryRefactored {
         db.execSQL(query);
     }
 
-    public Cursor getCursor(long currentID, String condition){
-
-        SQLiteDatabase db = sqlite.getWritableDatabase();
-
-        String selection = null;
-        String[] selectionArgs = null;
-        String[] columns = null;
-
-        columns = new String[] { COLUMN_QUOTE };
-        selection = _ID + condition;
-        selectionArgs = new String[] { String.valueOf(currentID) };
-
-        return db.query(TABLE_NAME, columns, selection, selectionArgs, null, null,null);
-    }
-
-    public QuoteModel getQuoteModelByCursor(Cursor cursor){
-
-        while (cursor.moveToNext()) {
-
-            return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
-
-        }
-
-        return null;
-    }
-
     public QuoteModel getFirstQuote(){
-        TraceUtils.LogInfo("SQLite getFirstQuote");
 
+        TraceUtils.LogInfo("SQLite getFirstQuote");
         SQLiteDatabase db = sqlite.getReadableDatabase();
         String query = "SELECT " + COLUMN_QUOTE +  ", MIN(_ID)  FROM " + TABLE_NAME ;
         Cursor cursor = db.rawQuery(query,null);
         cursor.moveToFirst();
-
         return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
     }
-    public QuoteModel getLastQuote(){
-        TraceUtils.LogInfo("SQLite getLastQuote");
 
+    public void clearTable(){
+        TraceUtils.LogInfo("SQLite clearTable");
+        SQLiteDatabase db = sqlite.getWritableDatabase();
+        db.delete(TABLE_NAME,null,null);
+        sqlite.close();
+    }
+
+    public QuoteModel getLastQuote(){
+
+        TraceUtils.LogInfo("SQLite getLastQuote");
         SQLiteDatabase db = sqlite.getReadableDatabase();
         String query = "SELECT " + COLUMN_QUOTE +  ", MAX(_ID)  FROM " + TABLE_NAME ;
         Cursor cursor = db.rawQuery(query,null);
@@ -172,6 +156,7 @@ public class QuotesRepositoryRefactored {
 
         return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
     }
+
     public int getTableSize(){
         TraceUtils.LogInfo("SQLite getTableSize");
         SQLiteDatabase db = sqlite.getReadableDatabase();
@@ -180,6 +165,7 @@ public class QuotesRepositoryRefactored {
         cursor.close();
         return count;
     }
+
     private boolean isQuoteExists(String quote){
 
         SQLiteDatabase db = sqlite.getReadableDatabase();
@@ -195,14 +181,28 @@ public class QuotesRepositoryRefactored {
         Cursor cursor = db.query(TABLE_NAME, columns, selection, selectionArgs, null, null,null);
         return !cursor.isAfterLast();
     }
-    public void clearTable(){
-        TraceUtils.LogInfo("SQLite clearTable");
+
+    private Cursor getCursor(long currentID, String condition){
+
         SQLiteDatabase db = sqlite.getWritableDatabase();
-        db.delete(TABLE_NAME,null,null);
-        sqlite.close();
+
+        String selection = null;
+        String[] selectionArgs = null;
+        String[] columns = null;
+
+        columns = new String[] { COLUMN_QUOTE };
+        selection = _ID + condition;
+        selectionArgs = new String[] { String.valueOf(currentID) };
+
+        return db.query(TABLE_NAME, columns, selection, selectionArgs, null, null,null);
     }
 
+    private QuoteModel getQuoteModelByCursor(Cursor cursor){
 
-
-
+        // TODO: Фигня какая-то написана. Переделай.
+        while (cursor.moveToNext()) {
+            return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
+        }
+        return null;
+    }
 }

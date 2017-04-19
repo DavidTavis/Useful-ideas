@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import layout.GlobalClass;
 import layout.models.QuoteModel;
 
 import java.io.IOException;
@@ -30,12 +32,14 @@ public class MonitorQuotesRefactored {
                                 QUOTE_TEXT = "quote_text";
 
     private CurrentQuoteChangedListener listener;
-    private Context context;
     private QuoteModel currentQuote;
+    private QuotesRepositoryRefactored repository;
+    private Context context;
 
     public MonitorQuotesRefactored(Context context) {
 
         this.context = context;
+        repository = ((GlobalClass)context.getApplicationContext()).getQuotesRepositoryRefactored();
     }
 
     public void setCurrentQuoteChangedListener(CurrentQuoteChangedListener listener) {
@@ -46,12 +50,6 @@ public class MonitorQuotesRefactored {
     public QuoteModel getCurrentQuote(){
 
         TraceUtils.LogInfo("MonitorQuotes getCurrentQuote");
-
-        // Warning! Стремный код!-------> Да. Это был костыль который нужно было убрать
-        //if(mContext == null){
-        //    Log.d(LOG_TAG,"mContext == null");
-        //    return "";
-        //}
 
         if(currentQuote != null)
             return currentQuote;
@@ -67,9 +65,16 @@ public class MonitorQuotesRefactored {
     }
 
     public void nextQuote() {
+
+        QuoteModel nextQuote = repository.getNextQuote(currentQuote.getId());
+        setCurrentQuote(nextQuote);
     }
 
+    // TODO: Реализация переключения тезисов.
     public void prevQuote() {
+
+        QuoteModel prevQoute = repository.getPrevQuote(currentQuote.getId());
+        setCurrentQuote(prevQoute);
     }
 
     private void setCurrentQuote(QuoteModel quote){

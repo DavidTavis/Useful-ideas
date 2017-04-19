@@ -75,7 +75,7 @@ public class MonitorQuotes {
         prefs.apply();
     }
 
-    // Это отправь в NewAppWidget который будет реализовывать CurrentQouteChangedListener
+    // TODO: Это отправь в NewAppWidget который будет реализовывать CurrentQouteChangedListener
     // и обновлять виджет по событию изменения текущей квоты.
     public void updateWidgetByScheduler(Intent intent, QuotesRepositoryRefactored quotesRepositoryRefactored) {
 
@@ -92,7 +92,7 @@ public class MonitorQuotes {
         }
     }
 
-    // Это отправь в NewAppWidget
+    // TODO: Это отправь в NewAppWidget
     public void handleButtonClick(Intent intent){
 
         QuotesRepositoryRefactored quotesRepositoryRefactored = NewAppWidget.getQuotesRepositoryRefactored(mContext);
@@ -157,7 +157,7 @@ public class MonitorQuotes {
         }
     }
 
-    // Это в NewAppWidget
+    // TODO: Это в NewAppWidget
     public void playSound(Context context, Uri alert) {
 
         MediaPlayer mMediaPlayer = new MediaPlayer();
