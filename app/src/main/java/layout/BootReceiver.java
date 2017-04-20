@@ -20,5 +20,4 @@ public class BootReceiver extends BroadcastReceiver {
             Scheduler.scheduleUpdate(context);
         }
     }
-
 }

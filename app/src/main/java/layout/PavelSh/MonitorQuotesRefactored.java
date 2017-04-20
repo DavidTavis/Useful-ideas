@@ -1,23 +1,7 @@
 package layout.PavelSh;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
-
-import layout.GlobalClass;
 import layout.models.QuoteModel;
-
-import java.io.IOException;
-
-import layout.NewAppWidget;
 
 /**
  * Created by TechnoA on 17.04.2017.

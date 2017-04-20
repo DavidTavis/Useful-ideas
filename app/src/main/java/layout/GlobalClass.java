@@ -35,6 +35,7 @@ public class GlobalClass extends Application {
     }
 
     public MonitorQuotesRefactored getMonitorQuotesRefactored() {
+
         if (monitorQuotesRefactored == null) {
             monitorQuotesRefactored = new MonitorQuotesRefactored(this);
         }

@@ -2,12 +2,15 @@ package layout.PavelSh;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import layout.Scheduler;
 
 /**
  * Created by Angelo W on 19.04.2017.
  */
 
-public class Settings {
+public class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String PREF_NAME = "com.example.david.PREFERENCE_FILE_KEY";
     private static final String QUOTE_ID = "quote_id",
@@ -17,10 +20,17 @@ public class Settings {
 
     private Context context;
     private SharedPreferences sharedPref;
+    private SettingsChangedListener settingsChangedListener;
+
     public Settings(Context context) {
 
         this.context = context;
         this.sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+    }
+
+    public void setSettingsChangedListener(SettingsChangedListener settingsChangedListener) {
+
+        this.settingsChangedListener = settingsChangedListener;
     }
 
     public String getQuote() {
@@ -51,18 +61,8 @@ public class Settings {
         return sharedPref.getString(RINGTONE,"default ringtone");
     }
 
-    // TODO: PavelSh не нужно устанавливать значение, так как при выборе оно уже записывается.
-    public String setRingtone() {
-        return "default ringtone";
-    }
-
     public boolean getUseSound() {
-        SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return sharedPref.getBoolean(USE_SOUND,true);
-    }
-
-    // TODO: PavelSh не нужно устанавливать значение, так как при выборе оно уже записывается.
-    public void setUseSound() {
     }
 
     public void close()  {
@@ -75,4 +75,12 @@ public class Settings {
         prefs.remove(USE_SOUND);
         prefs.apply();
     }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        if(settingsChangedListener != null)
+            settingsChangedListener.onSettingsChanged(key);
+    }
+
 }

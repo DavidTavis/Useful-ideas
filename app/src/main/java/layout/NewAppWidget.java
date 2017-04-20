@@ -6,25 +6,19 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
-
 import com.example.david.mywidgetnewattempt.R;
-
-import java.io.IOException;
-
-import layout.PavelSh.QuotesRepository;
+import layout.PavelSh.SettingsChangedListener;
+import layout.PavelSh.TraceUtils;
 import layout.PavelSh.Utils;
-import layout.data.MonitorQuotes;
 
 
-public class NewAppWidget extends AppWidgetProvider {
+// TODO: Реализуй интерфейс CurrentQuoteChangedListener по примеру SettingsChangedListener. И обновляй виджет.
+
+public class NewAppWidget extends AppWidgetProvider implements SettingsChangedListener {
 
     private static final String LOG_TAG = "MyLogWidget";
 
@@ -104,23 +98,20 @@ public class NewAppWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
         super.onReceive(context, intent);
-
         Log.d(LOG_TAG, "onReceive");
-
         //Обновление виджета по расписанию
         updateWidgetByScheduler(intent, context);
-
         //Обработка нажатия кнопок
         handleButtonClick(intent, context);
-
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+
         Log.d(LOG_TAG, "onUpdate");
         super.onUpdate(context, appWidgetManager, appWidgetIds);
-
         // обновляем все экземпляры
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
@@ -129,8 +120,8 @@ public class NewAppWidget extends AppWidgetProvider {
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
-        Log.d(LOG_TAG, "onDeleted");
 
+        Log.d(LOG_TAG, "onDeleted");
         // При удалении виджета, удаляем данные из SharedPreferences
         Utils.getGlobal(context).getMonitorQuotes().clearPreferences();
         // Очищаем таблицу и закрываем базу
@@ -139,34 +130,37 @@ public class NewAppWidget extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
+
+        // TODO: Точно не знаю где нужно расположить эту подписку. Но коцепция такая. Разберись где это правильно логически.
+        Utils.getGlobal(context).getSettings().setSettingsChangedListener(this);
+
         Log.d(LOG_TAG, "onEnabled");
         Scheduler.scheduleUpdate(context);
     }
 
     @Override
     public void onDisabled(Context context) {
+
+        Utils.getGlobal(context).getSettings().setSettingsChangedListener(null);
+
         Log.d(LOG_TAG, "onDisabled");
         //Отменяем обновление виджета
         Scheduler.clearUpdate(context);
-
     }
 
-    public void updateWidgetByScheduler(Intent intent, Context mContext) {
+    @Override
+    public void onSettingsChanged(String keyName) {
 
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
-        //Обновление виджета по расписанию
-        if (intent.getAction().equalsIgnoreCase(UPDATE_ALL_WIDGETS)) {
-            ComponentName thisAppWidget = new ComponentName(mContext.getPackageName(), getClass().getName());
-            int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
-
-//            quotesRepositoryRefactored.nextQuote();
-            for (int appWidgetID : ids) {
-                NewAppWidget.updateAppWidget(mContext, appWidgetManager, appWidgetID);
-            }
+        if (keyName.equals("listPref")) {
+            TraceUtils.LogInfo("SettingsFragment listPref listener");
+            // TODO: Напиши правильно код обновления виджета.
+            //AppWidgetManager appWidgetManager = AppWidgetManager.getInstance();
+            //NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
+            //Scheduler.scheduleUpdate(getActivity());
         }
     }
 
-    public void handleButtonClick(Intent intent, Context mContext){
+    private void handleButtonClick(Intent intent, Context mContext){
 
 //        QuotesRepositoryRefactored quotesRepositoryRefactored = NewAppWidget.getQuotesRepositoryRefactored(mContext);
 
@@ -187,16 +181,15 @@ public class NewAppWidget extends AppWidgetProvider {
             String str = intent.getStringExtra(KEY_UPDATE);
             if (str != null) {
                 // определяем сигнал установленный в ringtone preferences и признак его использования
-                // TODO: PavelSh вместо setRingtone() нужно getRingtone()
-//                String alarms = Utils.getGlobal(mContext).getSettings().setRingtone();
                 String alarms = Utils.getGlobal(mContext).getSettings().getRingtone();
                 Boolean useSound = Utils.getGlobal(mContext).getSettings().getUseSound();
                 Uri uri = Uri.parse(alarms);
-
+                // TODO: Повыноси наждый хендлер в свой метод.
                 switch (str) {
 
                     //Обработка нажатия "Следующая цитата"
                     case (NEXT_CLICKED):
+                        // TODO: Везде используй TraceUtils.
                         Log.d(LOG_TAG, "NEXT_CLICKED");
 //                        quotesRepositoryRefactored.nextQuote();
                         NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
@@ -231,5 +224,19 @@ public class NewAppWidget extends AppWidgetProvider {
         }
     }
 
+    private void updateWidgetByScheduler(Intent intent, Context mContext) {
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+        //Обновление виджета по расписанию
+        if (intent.getAction().equalsIgnoreCase(UPDATE_ALL_WIDGETS)) {
+            ComponentName thisAppWidget = new ComponentName(mContext.getPackageName(), getClass().getName());
+            int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
+
+//            quotesRepositoryRefactored.nextQuote();
+            for (int appWidgetID : ids) {
+                NewAppWidget.updateAppWidget(mContext, appWidgetManager, appWidgetID);
+            }
+        }
+    }
 }
 
