@@ -2,6 +2,7 @@ package layout;
 
 import android.app.Application;
 
+import layout.PavelSh.MonitorQuotesRefactored;
 import layout.PavelSh.QuotesRepository;
 import layout.PavelSh.Settings;
 import layout.data.MonitorQuotes;
@@ -12,8 +13,9 @@ import layout.data.MonitorQuotes;
 
 public class GlobalClass extends Application {
 
-    private QuotesRepository quotesRepositoryRefactored;
+    private QuotesRepository quotesRepository;
     private MonitorQuotes monitorQuotes;
+    private MonitorQuotesRefactored monitorQuotesRefactored;
     private Settings settings;
 
     public Settings getSettings() {
@@ -32,12 +34,19 @@ public class GlobalClass extends Application {
         return monitorQuotes;
     }
 
+    public MonitorQuotesRefactored getMonitorQuotesRefactored() {
+        if (monitorQuotesRefactored == null) {
+            monitorQuotesRefactored = new MonitorQuotesRefactored(this);
+        }
+        return monitorQuotesRefactored;
+    }
+
     public QuotesRepository getQuotesRepository() {
 
-        if(quotesRepositoryRefactored == null){
-            quotesRepositoryRefactored = new QuotesRepository(this);
+        if(quotesRepository == null){
+            quotesRepository = new QuotesRepository(this);
         }
-        return quotesRepositoryRefactored;
+        return quotesRepository;
     }
 
 }
