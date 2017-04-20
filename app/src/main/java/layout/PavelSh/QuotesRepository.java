@@ -57,9 +57,9 @@ public class QuotesRepository {
         private void createDatabase(SQLiteDatabase db, String tableName) {
 
             TraceUtils.LogInfo("Drop Database.");
-            db.execSQL(String.format("DROP TABLE IF EXISTS %1;", TABLE_NAME));
+            db.execSQL(String.format("DROP TABLE IF EXISTS %s;", TABLE_NAME));
             TraceUtils.LogInfo("Create Database.");
-            String query = String.format("CREATE TABLE %1 (%2 INTEGER PRIMARY KEY AUTOINCREMENT, %3 TEXT NOT NULL);", TABLE_NAME, _ID, COLUMN_QUOTE);
+            String query = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT NOT NULL);", TABLE_NAME, _ID, COLUMN_QUOTE);
             db.execSQL(query);
 
         }
@@ -67,7 +67,6 @@ public class QuotesRepository {
 
     public QuoteModel addQuote(String quote) throws InvalidParameterException {
 
-        TraceUtils.LogInfo("SQLite addQuote");
         SQLiteDatabase db = sqlite.getWritableDatabase();
 
         boolean quoteIsExists = isQuoteExists(quote);
@@ -77,6 +76,7 @@ public class QuotesRepository {
         ContentValues values = new ContentValues();
         values.put(COLUMN_QUOTE, quote);
         long id = db.insert(TABLE_NAME, null, values);
+        TraceUtils.LogInfo("SQLite addQuote: id = " + id + " quote = " + quote);
         return new QuoteModel(quote, id);
     }
 
