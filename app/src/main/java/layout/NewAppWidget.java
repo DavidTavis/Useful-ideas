@@ -6,12 +6,17 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import com.example.david.mywidgetnewattempt.R;
 
+import java.io.IOException;
 import java.net.URI;
 
 import layout.PavelSh.CurrentQuoteChangedListener;
@@ -121,6 +126,9 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
         super.onReceive(context, intent);
         TraceUtils.LogInfo("onReceive");
+        Utils.getGlobal(context).getSettings().setSettingsChangedListener(this);
+        Utils.getGlobal(context).getMonitorQuotesRefactored().setCurrentQuoteChangedListener(this);
+
         //Обновление виджета по расписанию
         updateWidgetByScheduler(intent, context);
         //Обработка нажатия кнопок

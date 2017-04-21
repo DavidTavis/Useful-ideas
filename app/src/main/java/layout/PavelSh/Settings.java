@@ -2,6 +2,7 @@ package layout.PavelSh;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import layout.Scheduler;
@@ -64,7 +65,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     }
 
     public String getRingtone() {
-        return sharedPref.getString(RINGTONE,"default ringtone");
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getString("ringtone", "default ringtone");
     }
 
     public boolean getUseSound() {
