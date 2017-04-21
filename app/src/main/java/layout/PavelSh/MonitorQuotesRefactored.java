@@ -45,15 +45,26 @@ public class MonitorQuotesRefactored {
 
     public void setNext() {
 
-        if(currentQuote==null) return;
+        if(currentQuote==null) {
+            QuoteModel quoteModel = Utils.getGlobal(context).getMonitorQuotesRefactored().getCurrentQuote()
+            setCurrentQuote(quoteModel);
+            if(currentQuote==null)
+                return;
+        }
         QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().getNextQuote(currentQuote.getId());
+        TraceUtils.LogInfo(nextQuote.getQuote());
         setCurrentQuote(nextQuote);
 
     }
 
     public void setPrev() {
 
-        if(currentQuote==null) return;
+        if(currentQuote==null) {
+            QuoteModel quoteModel = Utils.getGlobal(context).getMonitorQuotesRefactored().getCurrentQuote()
+            setCurrentQuote(quoteModel);
+            if(currentQuote==null)
+                return;
+        }
         QuoteModel prevQoute = Utils.getGlobal(context).getQuotesRepository().getPrevQuote(currentQuote.getId());
         setCurrentQuote(prevQoute);
 
@@ -65,7 +76,12 @@ public class MonitorQuotesRefactored {
 
     public void deleteQuote(){
 
-        if(currentQuote==null) return;
+        if(currentQuote==null) {
+            QuoteModel quoteModel = Utils.getGlobal(context).getMonitorQuotesRefactored().getCurrentQuote()
+            setCurrentQuote(quoteModel);
+            if(currentQuote==null)
+                return;
+        }
         QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().deleteQuote(currentQuote.getId());
         setCurrentQuote(nextQuote);
 

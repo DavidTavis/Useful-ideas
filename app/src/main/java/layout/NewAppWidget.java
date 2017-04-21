@@ -52,6 +52,7 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
     @Override
     public void onCurrentQuoteChanged(QuoteModel currentQuote, Context context) {
 
+        TraceUtils.LogInfo("onCurrentQuoteChanged");
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, NewAppWidget.class));
         for (int id: ids) {
