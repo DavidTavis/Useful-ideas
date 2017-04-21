@@ -89,11 +89,9 @@ public class QuotesRepository {
     public QuoteModel getNextQuote(long currentQuoteId) {
 
         Cursor cursor = getCursor(currentQuoteId, " > ?");
-
         if(cursor.isAfterLast()){
             return getFirstQuote();
         }
-
         return getQuoteModelByCursor(cursor);
     }
 
@@ -124,11 +122,15 @@ public class QuotesRepository {
     public QuoteModel getFirstQuote(){
 
         TraceUtils.LogInfo("SQLite getFirstQuote");
+
         SQLiteDatabase db = sqlite.getReadableDatabase();
-        String query = "SELECT " + COLUMN_QUOTE +  ", MIN(_ID)  FROM " + TABLE_NAME ;
+        String query = "SELECT " + COLUMN_QUOTE +  ", MIN(" +_ID + ")  FROM " + TABLE_NAME ;
         Cursor cursor = db.rawQuery(query,null);
         cursor.moveToFirst();
+
+
         return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
+
     }
 
     public void close(){
@@ -142,7 +144,7 @@ public class QuotesRepository {
 
         TraceUtils.LogInfo("SQLite getLastQuote");
         SQLiteDatabase db = sqlite.getReadableDatabase();
-        String query = "SELECT " + COLUMN_QUOTE +  ", MAX(_ID)  FROM " + TABLE_NAME ;
+        String query = "SELECT " + COLUMN_QUOTE +  ", MAX(" +_ID + ")  FROM " + TABLE_NAME ;
         Cursor cursor = db.rawQuery(query,null);
         cursor.moveToFirst();
 
@@ -194,6 +196,7 @@ public class QuotesRepository {
         if (cursor.moveToNext()) {
             String quote = cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE));
             long id = cursor.getLong(cursor.getColumnIndex(_ID));
+            TraceUtils.LogInfo("QuotesRepository id = " + id);
             return new QuoteModel(quote,id);
         }
         return null;

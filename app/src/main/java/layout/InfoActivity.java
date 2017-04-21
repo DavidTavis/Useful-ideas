@@ -40,11 +40,18 @@ public class InfoActivity extends Activity {
                 QuotesRepository quotesRepositoryRefactored = Utils.getGlobal(context).getQuotesRepository();
                 MonitorQuotesRefactored monitorQuotesRefactored = Utils.getGlobal(context).getMonitorQuotesRefactored();
                 if (quotesRepositoryRefactored.getTableSize() == 0) {
+
                     String[] quotes = context.getResources().getStringArray(R.array.array_quotes);
+
+                    QuoteModel quoteModel = null;
+
                     for (String myQuote : quotes) {
-                        QuoteModel quoteModel = quotesRepositoryRefactored.addQuote(myQuote);
+                        quoteModel = quotesRepositoryRefactored.addQuote(myQuote);
                     }
+
+                    monitorQuotesRefactored.setLast(quoteModel);
                     monitorQuotesRefactored.setNext();
+
                     //Обновляем виджет
                     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                     NewAppWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);

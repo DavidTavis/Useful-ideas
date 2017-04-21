@@ -21,8 +21,6 @@ import layout.PavelSh.Utils;
 import layout.models.QuoteModel;
 
 
-// TODO: Реализуй интерфейс CurrentQuoteChangedListener по примеру SettingsChangedListener. И обновляй виджет.
-
 public class NewAppWidget extends AppWidgetProvider implements SettingsChangedListener, CurrentQuoteChangedListener{
 
     public static final String UPDATE_ALL_WIDGETS = "update_all_widgets";
@@ -51,17 +49,18 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, NewAppWidget.class));
-
         for (int id: ids) {
             updateAppWidget(context,appWidgetManager,id);
         }
+
     }
 
     public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
         TraceUtils.LogInfo("updateAppWidget");
-
-        widgetText = Utils.getGlobal(context).getMonitorQuotesRefactored().getCurrentQuote().getQuote();
+        QuoteModel quoteModel = Utils.getGlobal(context).getMonitorQuotesRefactored().getCurrentQuote();
+        if(quoteModel==null)return;
+        widgetText = quoteModel.getQuote();
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
@@ -176,6 +175,8 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         Boolean useSound = Utils.getGlobal(mContext).getSettings().getUseSound();
 
         String str = intent.getStringExtra(KEY_UPDATE);
+
+        if(str==null) return;
 
         switch (str) {
             case (NEXT_CLICKED):
