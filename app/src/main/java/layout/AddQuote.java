@@ -12,8 +12,10 @@ import android.widget.Toast;
 
 import com.example.david.mywidgetnewattempt.R;
 
+import layout.PavelSh.MonitorQuotesRefactored;
 import layout.PavelSh.QuotesRepository;
 import layout.PavelSh.Utils;
+import layout.models.QuoteModel;
 
 
 /**
@@ -32,10 +34,13 @@ public class AddQuote extends Activity {
         String widgetText = etQuote.getText().toString();
 
         QuotesRepository quotesRepository = Utils.getGlobal(context).getQuotesRepository();
+        MonitorQuotesRefactored monitorQuotesRefactored = Utils.getGlobal(context).getMonitorQuotesRefactored();
+
 
         //добавляем цитату в таблицу
         if(!widgetText.equals("")) {
-            quotesRepository.addQuote(widgetText);
+            QuoteModel quoteModel = quotesRepository.addQuote(widgetText);
+            monitorQuotesRefactored.setLast(quoteModel);
         }else{
             Toast.makeText(AddQuote.this, "You have not typed a quote", Toast.LENGTH_SHORT).show();
         }

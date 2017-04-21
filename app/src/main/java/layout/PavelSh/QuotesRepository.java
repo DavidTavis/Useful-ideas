@@ -25,6 +25,7 @@ public class QuotesRepository {
     public QuotesRepository(Context context) {
 
         sqlite = new SQLite(context, TABLE_NAME);
+
     }
 
     private class SQLite extends SQLiteOpenHelper {
@@ -75,14 +76,13 @@ public class QuotesRepository {
         ContentValues values = new ContentValues();
         values.put(COLUMN_QUOTE, quote);
         long id = db.insert(TABLE_NAME, null, values);
-        TraceUtils.LogInfo("SQLite addQuote: id = " + id + " quote = " + quote);
         return new QuoteModel(quote, id);
     }
 
     public QuoteModel findQuoteByID(long id){
 
         Cursor cursor = getCursor(id, " = ?");
-        return getQuoteModelByCursor(cursor);
+        return getQuoteModelByCursorFirst(cursor);
 
     }
 
@@ -92,18 +92,18 @@ public class QuotesRepository {
         if(cursor.isAfterLast()){
             return getFirstQuote();
         }
-        return getQuoteModelByCursor(cursor);
+        return getQuoteModelByCursorFirst(cursor);
     }
 
     public QuoteModel getPrevQuote(long currentQuoteId) {
 
         Cursor cursor = getCursor(currentQuoteId, " < ?");
-
         if(cursor.isAfterLast()){
+            TraceUtils.LogInfo("IsAfterLast");
             return getLastQuote();
         }
 
-        return getQuoteModelByCursor(cursor);
+        return getQuoteModelByCursorLast(cursor);
 
     }
 
@@ -112,7 +112,7 @@ public class QuotesRepository {
         QuoteModel nextQuote = getNextQuote(id);
 
         SQLiteDatabase db = sqlite.getWritableDatabase();
-        String query = String.format("DELETE FROM %1 WHERE _id = %2;", TABLE_NAME, id);
+        String query = String.format("DELETE FROM %s WHERE _id = %s;", TABLE_NAME, id);
         db.execSQL(query);
 
         return nextQuote;
@@ -124,10 +124,10 @@ public class QuotesRepository {
         TraceUtils.LogInfo("SQLite getFirstQuote");
 
         SQLiteDatabase db = sqlite.getReadableDatabase();
-        String query = "SELECT " + COLUMN_QUOTE +  ", MIN(" +_ID + ")  FROM " + TABLE_NAME ;
+        String query = String.format("SELECT %s, MIN(%s) as _id  FROM %s", COLUMN_QUOTE, _ID, TABLE_NAME);;
         Cursor cursor = db.rawQuery(query,null);
-        cursor.moveToFirst();
 
+        cursor.moveToFirst();
 
         return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
 
@@ -144,7 +144,7 @@ public class QuotesRepository {
 
         TraceUtils.LogInfo("SQLite getLastQuote");
         SQLiteDatabase db = sqlite.getReadableDatabase();
-        String query = "SELECT " + COLUMN_QUOTE +  ", MAX(" +_ID + ")  FROM " + TABLE_NAME ;
+        String query = String.format("SELECT %s, MAX(%s) as _id  FROM %s", COLUMN_QUOTE, _ID, TABLE_NAME);
         Cursor cursor = db.rawQuery(query,null);
         cursor.moveToFirst();
 
@@ -153,6 +153,7 @@ public class QuotesRepository {
 
     public int getTableSize(){
         TraceUtils.LogInfo("SQLite getTableSize");
+
         SQLiteDatabase db = sqlite.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
         int count = cursor.getCount();
@@ -184,21 +185,32 @@ public class QuotesRepository {
         String[] selectionArgs = null;
         String[] columns = null;
 
-        columns = new String[] { COLUMN_QUOTE };
+        columns = new String[] { COLUMN_QUOTE, _ID };
         selection = _ID + condition;
         selectionArgs = new String[] { String.valueOf(currentID) };
 
         return db.query(TABLE_NAME, columns, selection, selectionArgs, null, null,null);
     }
 
-    private QuoteModel getQuoteModelByCursor(Cursor cursor){
+    private QuoteModel getQuoteModelByCursorFirst(Cursor cursor){
 
         if (cursor.moveToNext()) {
             String quote = cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE));
             long id = cursor.getLong(cursor.getColumnIndex(_ID));
-            TraceUtils.LogInfo("QuotesRepository id = " + id);
+            return new QuoteModel(quote,id);
+        }
+        return null;
+
+    }
+
+    private QuoteModel getQuoteModelByCursorLast(Cursor cursor){
+
+        if (cursor.moveToLast()) {
+            String quote = cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE));
+            long id = cursor.getLong(cursor.getColumnIndex(_ID));
             return new QuoteModel(quote,id);
         }
         return null;
     }
+
 }
