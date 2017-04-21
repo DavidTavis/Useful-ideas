@@ -23,11 +23,12 @@ public class MonitorQuotesRefactored {
     public void setCurrentQuoteChangedListener(CurrentQuoteChangedListener listener) {
 
         this.listener = listener;
+
     }
 
     public QuoteModel getCurrentQuote(){
 
-        TraceUtils.LogInfo("MonitorQuotes getCurrentQuote");
+        TraceUtils.LogInfo("MonitorQuotesRefactored getCurrentQuote");
 
         if(currentQuote != null)
             return currentQuote;
@@ -39,18 +40,27 @@ public class MonitorQuotesRefactored {
 
         String quote = Utils.getGlobal(context).getSettings().getQuote();
         return new QuoteModel(quote, id);
+
     }
 
-    public void nextQuote() {
+    public void setNext() {
 
         QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().getNextQuote(currentQuote.getId());
         setCurrentQuote(nextQuote);
+
     }
 
-    public void prevQuote() {
+    public void setPrev() {
 
         QuoteModel prevQoute = Utils.getGlobal(context).getQuotesRepository().getPrevQuote(currentQuote.getId());
         setCurrentQuote(prevQoute);
+
+    }
+
+
+    public void deleteQuote(){
+        QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().deleteQuote(currentQuote.getId());
+        setCurrentQuote(nextQuote);
     }
 
     private void setCurrentQuote(QuoteModel quote){
@@ -60,6 +70,6 @@ public class MonitorQuotesRefactored {
 
         currentQuote = quote;
         if(listener != null)
-            listener.onCurrentQuoteChanged(currentQuote);
+            listener.onCurrentQuoteChanged(currentQuote,context);
     }
 }

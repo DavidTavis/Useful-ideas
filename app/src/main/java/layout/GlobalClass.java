@@ -5,7 +5,6 @@ import android.app.Application;
 import layout.PavelSh.MonitorQuotesRefactored;
 import layout.PavelSh.QuotesRepository;
 import layout.PavelSh.Settings;
-import layout.data.MonitorQuotes;
 
 /**
  * Created by TechnoA on 17.04.2017.
@@ -14,7 +13,6 @@ import layout.data.MonitorQuotes;
 public class GlobalClass extends Application {
 
     private QuotesRepository quotesRepository;
-    private MonitorQuotes monitorQuotes;
     private MonitorQuotesRefactored monitorQuotesRefactored;
     private Settings settings;
 
@@ -24,14 +22,6 @@ public class GlobalClass extends Application {
             settings = new Settings(this);
         }
         return settings;
-    }
-
-    public MonitorQuotes getMonitorQuotes() {
-
-        if(monitorQuotes==null){
-            monitorQuotes = new MonitorQuotes(this);
-        }
-        return monitorQuotes;
     }
 
     public MonitorQuotesRefactored getMonitorQuotesRefactored() {

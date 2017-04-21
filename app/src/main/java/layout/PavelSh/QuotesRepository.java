@@ -10,7 +10,6 @@ import android.provider.BaseColumns;
 import java.security.InvalidParameterException;
 
 import layout.models.QuoteModel;
-import layout.data.MonitorQuotes;
 
 /**
  * Created by TechnoA on 17.04.2017.
@@ -110,11 +109,16 @@ public class QuotesRepository {
 
     }
 
-    public void deleteQuote(long id){
+    public QuoteModel deleteQuote(long id){
+
+        QuoteModel nextQuote = getNextQuote(id);
 
         SQLiteDatabase db = sqlite.getWritableDatabase();
         String query = String.format("DELETE FROM %1 WHERE _id = %2;", TABLE_NAME, id);
         db.execSQL(query);
+
+        return nextQuote;
+
     }
 
     public QuoteModel getFirstQuote(){

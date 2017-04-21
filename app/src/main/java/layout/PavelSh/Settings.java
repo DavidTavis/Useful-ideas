@@ -33,9 +33,15 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
         this.settingsChangedListener = settingsChangedListener;
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        if(settingsChangedListener != null)
+            settingsChangedListener.onSettingsChanged(key, context);
+    }
+
     public String getQuote() {
 
-        SharedPreferences sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return sharedPref.getString(QUOTE_TEXT, "");
     }
 
@@ -67,20 +73,13 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     public void close()  {
 
-        TraceUtils.LogInfo("MonitorQuotes deleteTitlePref");
+        TraceUtils.LogInfo("Settings deleteTitlePref");
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREF_NAME, 0).edit();
         prefs.remove(QUOTE_ID);
         prefs.remove(QUOTE_TEXT);
         prefs.remove(RINGTONE);
         prefs.remove(USE_SOUND);
         prefs.apply();
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
-        if(settingsChangedListener != null)
-            settingsChangedListener.onSettingsChanged(key);
     }
 
 }

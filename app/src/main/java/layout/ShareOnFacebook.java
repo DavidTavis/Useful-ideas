@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import layout.PavelSh.QuotesRepository;
+import layout.PavelSh.TraceUtils;
 
 /**
  * Created by TechnoA on 30.03.2017.
@@ -30,7 +31,6 @@ import layout.PavelSh.QuotesRepository;
 
 public class ShareOnFacebook extends FragmentActivity {
 
-    private static final String LOG_TAG = "MyLogWidget";
     private CallbackManager callbackManager;
     private LoginManager loginManager;
     private ShareDialog shareDialog;
@@ -42,7 +42,7 @@ public class ShareOnFacebook extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.share_facebook);
-        Log.d(LOG_TAG,"ShareOnFacebook onCreate");
+        TraceUtils.LogInfo("ShareOnFacebook onCreate");
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
@@ -56,22 +56,18 @@ public class ShareOnFacebook extends FragmentActivity {
             @Override
             public void onSuccess(LoginResult loginResult)
             {
-                Log.d(LOG_TAG," onSuccess");
                 shareMessageToFacebook();
-                Log.d(LOG_TAG,"shareMessageToFacebook onSuccess");
             }
 
             @Override
             public void onCancel()
             {
-                Log.d(LOG_TAG,"ShareOnFacebook onCancel");
                 System.out.println("onCancel");
             }
 
             @Override
             public void onError(FacebookException exception)
             {
-                Log.d(LOG_TAG,"ShareOnFacebook onError");
                 System.out.println("onError");
             }
         });
@@ -80,7 +76,7 @@ public class ShareOnFacebook extends FragmentActivity {
 
     public void shareMessageToFacebook() {
 
-        String quote = ((GlobalClass)getApplicationContext()).getMonitorQuotes().getCurrentQuote();
+        String quote = ((GlobalClass)getApplicationContext()).getMonitorQuotesRefactored().getCurrentQuote().getQuote();
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             ShareLinkContent linkContent = new ShareLinkContent.Builder()
                     .setContentTitle("Your Rules")
@@ -95,14 +91,12 @@ public class ShareOnFacebook extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(LOG_TAG," onResume");
         AppEventsLogger.activateApp(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(LOG_TAG," onPause");
         AppEventsLogger.deactivateApp(this);
     }
 
@@ -110,6 +104,5 @@ public class ShareOnFacebook extends FragmentActivity {
     protected void onActivityResult(int requestCode, int responseCode, Intent data) {
         super.onActivityResult(requestCode, responseCode, data);
         callbackManager.onActivityResult(requestCode, responseCode, data);
-        Log.d(LOG_TAG," onActivityResult");
     }
 }

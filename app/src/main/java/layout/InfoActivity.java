@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.example.david.mywidgetnewattempt.R;
 
+import layout.PavelSh.MonitorQuotesRefactored;
+import layout.PavelSh.TraceUtils;
 import layout.PavelSh.Utils;
 import layout.models.QuoteModel;
 import layout.PavelSh.QuotesRepository;
@@ -36,12 +38,13 @@ public class InfoActivity extends Activity {
             public void run() {
 
                 QuotesRepository quotesRepositoryRefactored = Utils.getGlobal(context).getQuotesRepository();
+                MonitorQuotesRefactored monitorQuotesRefactored = Utils.getGlobal(context).getMonitorQuotesRefactored();
                 if (quotesRepositoryRefactored.getTableSize() == 0) {
                     String[] quotes = context.getResources().getStringArray(R.array.array_quotes);
                     for (String myQuote : quotes) {
                         QuoteModel quoteModel = quotesRepositoryRefactored.addQuote(myQuote);
                     }
-//                    quotesRepositoryRefactored.nextQuote();
+                    monitorQuotesRefactored.setNext();
                     //Обновляем виджет
                     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                     NewAppWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
@@ -59,7 +62,7 @@ public class InfoActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_TAG,"InfoActivity onCreate");
+        TraceUtils.LogInfo("InfoActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info);
 

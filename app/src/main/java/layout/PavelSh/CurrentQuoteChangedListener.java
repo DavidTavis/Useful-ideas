@@ -1,4 +1,6 @@
 package layout.PavelSh;
+import android.content.Context;
+
 import layout.models.QuoteModel;
 
 /**
@@ -7,5 +9,5 @@ import layout.models.QuoteModel;
 
 public interface CurrentQuoteChangedListener {
 
-    void onCurrentQuoteChanged(QuoteModel currentQuote);
+    void onCurrentQuoteChanged(QuoteModel currentQuote, Context context);
 }

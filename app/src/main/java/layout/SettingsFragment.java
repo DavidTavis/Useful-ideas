@@ -40,6 +40,7 @@ public class SettingsFragment extends PreferenceFragment {
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(Utils.getGlobal(getContext()).getSettings());
     }
 
+
     @Override
     public void onPause() {
         TraceUtils.LogInfo("SettingsFragment onPause");

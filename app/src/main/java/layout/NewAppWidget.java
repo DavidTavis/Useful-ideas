@@ -11,16 +11,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 import com.example.david.mywidgetnewattempt.R;
+
+import java.net.URI;
+
+import layout.PavelSh.CurrentQuoteChangedListener;
 import layout.PavelSh.SettingsChangedListener;
 import layout.PavelSh.TraceUtils;
 import layout.PavelSh.Utils;
+import layout.models.QuoteModel;
 
 
 // TODO: Реализуй интерфейс CurrentQuoteChangedListener по примеру SettingsChangedListener. И обновляй виджет.
 
-public class NewAppWidget extends AppWidgetProvider implements SettingsChangedListener {
-
-    private static final String LOG_TAG = "MyLogWidget";
+public class NewAppWidget extends AppWidgetProvider implements SettingsChangedListener, CurrentQuoteChangedListener{
 
     public static final String UPDATE_ALL_WIDGETS = "update_all_widgets";
     private static final String NEXT_CLICKED = "com.example.david.mywidgetnewattempt.ButtonClickNext";
@@ -33,13 +36,32 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
     private static final int VALUE_DEL = 3;
 
     private static CharSequence widgetText;
-    private int mAppWidgetId;
+
+    @Override
+    public void onSettingsChanged(String keyName, Context context) {
+
+        if (keyName.equals("listPref")) {
+            TraceUtils.LogInfo("SettingsFragment listPref listener");
+            Scheduler.scheduleUpdate(context);
+        }
+    }
+
+    @Override
+    public void onCurrentQuoteChanged(QuoteModel currentQuote, Context context) {
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, NewAppWidget.class));
+
+        for (int id: ids) {
+            updateAppWidget(context,appWidgetManager,id);
+        }
+    }
 
     public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
-        Log.d(LOG_TAG, "updateAppWidget");
+        TraceUtils.LogInfo("updateAppWidget");
 
-        widgetText = Utils.getGlobal(context).getMonitorQuotes().getCurrentQuote();
+        widgetText = Utils.getGlobal(context).getMonitorQuotesRefactored().getCurrentQuote().getQuote();
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
@@ -89,7 +111,6 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         deleteIntent.putExtra(KEY_UPDATE, DELETE_QUOTE);
         pIntent = PendingIntent.getBroadcast(context, VALUE_DEL, deleteIntent, 0);
         views.setOnClickPendingIntent(R.id.btnDelete, pIntent);
-        Log.d(LOG_TAG, String.valueOf(appWidgetId));
 
         // Обновляем виджет
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -100,7 +121,7 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
     public void onReceive(Context context, Intent intent) {
 
         super.onReceive(context, intent);
-        Log.d(LOG_TAG, "onReceive");
+        TraceUtils.LogInfo("onReceive");
         //Обновление виджета по расписанию
         updateWidgetByScheduler(intent, context);
         //Обработка нажатия кнопок
@@ -110,7 +131,7 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
-        Log.d(LOG_TAG, "onUpdate");
+        TraceUtils.LogInfo("onUpdate");
         super.onUpdate(context, appWidgetManager, appWidgetIds);
         // обновляем все экземпляры
         for (int appWidgetId : appWidgetIds) {
@@ -121,9 +142,9 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
 
-        Log.d(LOG_TAG, "onDeleted");
+        TraceUtils.LogInfo("onDeleted");
         // При удалении виджета, удаляем данные из SharedPreferences
-        Utils.getGlobal(context).getMonitorQuotes().clearPreferences();
+        Utils.getGlobal(context).getSettings().close();
         // Очищаем таблицу и закрываем базу
         Utils.getGlobal(context).getQuotesRepository().close();
     }
@@ -131,10 +152,10 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
     @Override
     public void onEnabled(Context context) {
 
-        // TODO: Точно не знаю где нужно расположить эту подписку. Но коцепция такая. Разберись где это правильно логически.
         Utils.getGlobal(context).getSettings().setSettingsChangedListener(this);
+        Utils.getGlobal(context).getMonitorQuotesRefactored().setCurrentQuoteChangedListener(this);
 
-        Log.d(LOG_TAG, "onEnabled");
+        TraceUtils.LogInfo("onEnabled");
         Scheduler.scheduleUpdate(context);
     }
 
@@ -143,84 +164,59 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
         Utils.getGlobal(context).getSettings().setSettingsChangedListener(null);
 
-        Log.d(LOG_TAG, "onDisabled");
+        TraceUtils.LogInfo("onDisabled");
         //Отменяем обновление виджета
         Scheduler.clearUpdate(context);
     }
 
-    @Override
-    public void onSettingsChanged(String keyName) {
+    private void handleButtonClick(Intent intent, Context mContext){
 
-        if (keyName.equals("listPref")) {
-            TraceUtils.LogInfo("SettingsFragment listPref listener");
-            // TODO: Напиши правильно код обновления виджета.
-            //AppWidgetManager appWidgetManager = AppWidgetManager.getInstance();
-            //NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
-            //Scheduler.scheduleUpdate(getActivity());
+        // определяем сигнал установленный в ringtone preferences и признак его использования
+        Uri uri = Uri.parse(Utils.getGlobal(mContext).getSettings().getRingtone());
+        Boolean useSound = Utils.getGlobal(mContext).getSettings().getUseSound();
+
+        String str = intent.getStringExtra(KEY_UPDATE);
+
+        switch (str) {
+            case (NEXT_CLICKED):
+                nextQuote(mContext, useSound, uri);
+                break;
+
+            case (PREV_CLICKED):
+                prevQuote(mContext, useSound, uri);
+                break;
+
+            case (DELETE_QUOTE):
+                deleteQuote(mContext, useSound, uri);
+                break;
+        }
+
+    }
+
+    public void nextQuote(Context context, Boolean useSound, Uri uri){
+        TraceUtils.LogInfo("NEXT_CLICKED");
+
+        Utils.getGlobal(context).getMonitorQuotesRefactored().setNext();
+        if (useSound) {
+            Utils.playSound(context, uri);
         }
     }
 
-    private void handleButtonClick(Intent intent, Context mContext){
+    public void prevQuote(Context context, Boolean useSound, Uri uri){
+        TraceUtils.LogInfo("PREV_CLICKED");
 
-//        QuotesRepositoryRefactored quotesRepositoryRefactored = NewAppWidget.getQuotesRepositoryRefactored(mContext);
+        Utils.getGlobal(context).getMonitorQuotesRefactored().setPrev();
+        if (useSound) {
+            Utils.playSound(context, uri);
+        }
+    }
 
-        int mAppWidgetId;
-        Bundle extras = intent.getExtras();
+    public void deleteQuote(Context context, Boolean useSound, Uri uri){
+        TraceUtils.LogInfo("PREV_CLICKED");
 
-        //Нахождение id виджета
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
-            if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-                return;
-            }
-
-
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
-            String str = intent.getStringExtra(KEY_UPDATE);
-            if (str != null) {
-                // определяем сигнал установленный в ringtone preferences и признак его использования
-                String alarms = Utils.getGlobal(mContext).getSettings().getRingtone();
-                Boolean useSound = Utils.getGlobal(mContext).getSettings().getUseSound();
-                Uri uri = Uri.parse(alarms);
-                // TODO: Повыноси наждый хендлер в свой метод.
-                switch (str) {
-
-                    //Обработка нажатия "Следующая цитата"
-                    case (NEXT_CLICKED):
-                        // TODO: Везде используй TraceUtils.
-                        Log.d(LOG_TAG, "NEXT_CLICKED");
-//                        quotesRepositoryRefactored.nextQuote();
-                        NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
-                        if (useSound) {
-                            Utils.playSound(mContext, uri);
-                        }
-                        break;
-
-                    //Обработка нажатия "Предыдущая цитата"
-                    case (PREV_CLICKED):
-                        Log.d(LOG_TAG, "PREV_CLICKED");
-//                        quotesRepositoryRefactored.prevQuote();
-                        if (useSound) {
-                            Utils.playSound(mContext, uri);
-                        }
-                        NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
-                        break;
-
-                    //Обработка нажатия "Удаление цитаты"
-                    case (DELETE_QUOTE):
-                        Log.d(LOG_TAG, "DELETE_QUOTE");
-//                        quotesRepositoryRefactored.deleteQuote();
-                        if (useSound) {
-                            Utils.playSound(mContext, uri);
-                        }
-                        NewAppWidget.updateAppWidget(mContext, appWidgetManager, mAppWidgetId);
-                        break;
-
-                }
-
-            }
+        Utils.getGlobal(context).getMonitorQuotesRefactored().deleteQuote();
+        if (useSound) {
+            Utils.playSound(context, uri);
         }
     }
 
@@ -238,5 +234,6 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
             }
         }
     }
+
 }
 

@@ -8,19 +8,19 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import layout.PavelSh.TraceUtils;
+
 /**
  * Created by TechnoA on 08.04.2017.
  */
 
 public class Scheduler {
 
-    public static final String LOG_TAG = "MyLogWidget";
-
     public static void scheduleUpdate(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String interval = prefs.getString("listPref", "1");
 
-        Log.d(LOG_TAG,interval);
+        TraceUtils.LogInfo(interval);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long intervalMillis = Integer.parseInt(interval)*60*1000;
 
