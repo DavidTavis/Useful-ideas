@@ -23,7 +23,7 @@
                 android:resource="@xml/new_app_widget_info" />
         </receiver>
 
-        <activity android:name="layout.InfoActivity">
+        <activity android:name="layout.views.InfoActivity">
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -31,10 +31,10 @@
 
         </activity>
 
-        <activity android:name="layout.AddQuote">
+        <activity android:name="layout.views.AddQuote">
         </activity>
 
-        <activity android:name="layout.ShareOnFacebook">
+        <activity android:name="layout.views.ShareOnFacebook">
 
         </activity>
 

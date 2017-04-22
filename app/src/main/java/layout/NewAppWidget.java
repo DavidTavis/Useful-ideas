@@ -6,27 +6,20 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.RemoteViews;
 import com.example.david.mywidgetnewattempt.R;
 
-import java.io.IOException;
-import java.net.URI;
-
-import layout.PavelSh.CurrentQuoteChangedListener;
-import layout.PavelSh.SettingsChangedListener;
-import layout.PavelSh.TraceUtils;
-import layout.PavelSh.Utils;
+import layout.settings.SettingsChangedListener;
+import layout.utils.TraceUtils;
+import layout.utils.Utils;
 import layout.models.QuoteModel;
+import layout.views.AddQuote;
+import layout.views.InfoActivity;
+import layout.views.ShareOnFacebook;
 
 
-public class NewAppWidget extends AppWidgetProvider implements SettingsChangedListener, CurrentQuoteChangedListener{
+public class NewAppWidget extends AppWidgetProvider implements SettingsChangedListener, CurrentQuoteChangedListener {
 
     public static final String UPDATE_ALL_WIDGETS = "update_all_widgets";
     private static final String NEXT_CLICKED = "com.example.david.mywidgetnewattempt.ButtonClickNext";

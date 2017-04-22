@@ -1,4 +1,4 @@
-package layout;
+package layout.views;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;

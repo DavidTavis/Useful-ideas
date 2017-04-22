@@ -1,4 +1,4 @@
-package layout.PavelSh;
+package layout;
 import android.content.Context;
 
 import layout.models.QuoteModel;

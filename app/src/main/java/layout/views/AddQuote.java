@@ -1,20 +1,20 @@
-package layout;
+package layout.views;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.david.mywidgetnewattempt.R;
 
-import layout.PavelSh.MonitorQuotesRefactored;
-import layout.PavelSh.QuotesRepository;
-import layout.PavelSh.Utils;
+import layout.NewAppWidget;
+import layout.MonitorQuotesRefactored;
+import layout.repository.QuotesRepository;
+import layout.utils.Utils;
 import layout.models.QuoteModel;
 
 

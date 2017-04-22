@@ -2,9 +2,9 @@ package layout;
 
 import android.app.Application;
 
-import layout.PavelSh.MonitorQuotesRefactored;
-import layout.PavelSh.QuotesRepository;
-import layout.PavelSh.Settings;
+import layout.MonitorQuotesRefactored;
+import layout.repository.QuotesRepository;
+import layout.settings.Settings;
 
 /**
  * Created by TechnoA on 17.04.2017.

@@ -1,11 +1,10 @@
-package layout.PavelSh;
+package layout.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
-import layout.Scheduler;
+import layout.utils.TraceUtils;
 
 /**
  * Created by Angelo W on 19.04.2017.

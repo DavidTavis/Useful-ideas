@@ -7,7 +7,7 @@
         android:key="pref_sound_use"
         android:summary="Use sound when you press the buttons"
         android:title="@string/pref_sound_use" />
-    <layout.ExtraRingtonePreference
+    <layout.views.ExtraRingtonePreference
         android:key="ringtone"
         android:title="Choose sound"
         android:summary="%s"

@@ -1,16 +1,13 @@
-package layout;
+package layout.settings;
 
-import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
-import android.util.Log;
 
 import com.example.david.mywidgetnewattempt.R;
 
-import layout.PavelSh.TraceUtils;
-import layout.PavelSh.Utils;
+import layout.utils.TraceUtils;
+import layout.utils.Utils;
 
 /**
  * Created by TechnoA on 01.04.2017.

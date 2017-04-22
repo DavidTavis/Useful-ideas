@@ -1,4 +1,4 @@
-package layout;
+package layout.views;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
@@ -6,17 +6,18 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.david.mywidgetnewattempt.R;
 
-import layout.PavelSh.MonitorQuotesRefactored;
-import layout.PavelSh.TraceUtils;
-import layout.PavelSh.Utils;
+import layout.NewAppWidget;
+import layout.MonitorQuotesRefactored;
+import layout.utils.TraceUtils;
+import layout.utils.Utils;
+import layout.settings.SettingsFragment;
 import layout.models.QuoteModel;
-import layout.PavelSh.QuotesRepository;
+import layout.repository.QuotesRepository;
 
 /**
  * Created by TechnoA on 01.03.2017.

@@ -6,9 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
-import layout.PavelSh.TraceUtils;
+import layout.utils.TraceUtils;
 
 /**
  * Created by TechnoA on 08.04.2017.

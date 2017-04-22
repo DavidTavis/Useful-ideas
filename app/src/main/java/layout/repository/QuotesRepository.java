@@ -1,4 +1,4 @@
-package layout.PavelSh;
+package layout.repository;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.provider.BaseColumns;
 import java.security.InvalidParameterException;
 
 import layout.models.QuoteModel;
+import layout.utils.TraceUtils;
 
 /**
  * Created by TechnoA on 17.04.2017.

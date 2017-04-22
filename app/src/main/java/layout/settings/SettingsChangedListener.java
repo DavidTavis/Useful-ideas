@@ -1,4 +1,4 @@
-package layout.PavelSh;
+package layout.settings;
 
 import android.content.Context;
 

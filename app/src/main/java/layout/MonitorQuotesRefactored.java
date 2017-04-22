@@ -1,7 +1,10 @@
-package layout.PavelSh;
+package layout;
 
 import android.content.Context;
+
 import layout.models.QuoteModel;
+import layout.utils.TraceUtils;
+import layout.utils.Utils;
 
 /**
  * Created by TechnoA on 17.04.2017.
