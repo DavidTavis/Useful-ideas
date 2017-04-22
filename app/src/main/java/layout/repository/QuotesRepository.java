@@ -116,8 +116,8 @@ public class QuotesRepository {
         String query = String.format("DELETE FROM %s WHERE _id = %s;", TABLE_NAME, id);
         db.execSQL(query);
 
+        // TODO: не должен этот метод возвращать next qoute.
         return nextQuote;
-
     }
 
     public QuoteModel getFirstQuote(){
@@ -127,11 +127,8 @@ public class QuotesRepository {
         SQLiteDatabase db = sqlite.getReadableDatabase();
         String query = String.format("SELECT %s, MIN(%s) as _id  FROM %s", COLUMN_QUOTE, _ID, TABLE_NAME);;
         Cursor cursor = db.rawQuery(query,null);
-
         cursor.moveToFirst();
-
         return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
-
     }
 
     public void close(){

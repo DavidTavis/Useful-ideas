@@ -49,7 +49,7 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, NewAppWidget.class));
         for (int id: ids) {
-            updateAppWidget(context,appWidgetManager,id);
+            updateAppWidget(context, appWidgetManager, id);
         }
 
     }
@@ -58,7 +58,10 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
         TraceUtils.LogInfo("updateAppWidget");
         QuoteModel quoteModel = Utils.getGlobal(context).getMonitorQuotesRefactored().getCurrentQuote();
-        if(quoteModel==null)return;
+        
+        if(quoteModel == null)
+            return;
+
         widgetText = quoteModel.getQuote();
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_widget);
@@ -200,6 +203,7 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         TraceUtils.LogInfo("NEXT_CLICKED");
 
         Utils.getGlobal(context).getMonitorQuotesRefactored().setNext();
+        // TODO: У тебя музыка играет всегда при нажатии. Зачем каждый раз это делать. Если можно вынести в handleButtonClick.
         if (useSound) {
             Utils.playSound(context, uri);
         }

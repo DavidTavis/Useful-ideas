@@ -10,6 +10,7 @@ import layout.utils.Utils;
  * Created by TechnoA on 17.04.2017.
  */
 
+// TODO: Переименуй в MonitorQuotes
 /// Класс занимается хранением состояния текущей квоты.
 /// Может также лежать в конетксте, но возможно им владеет только NewAppWidget.
 public class MonitorQuotesRefactored {
@@ -38,8 +39,12 @@ public class MonitorQuotesRefactored {
 
 
         long id = Utils.getGlobal(context).getSettings().getQuoteId();
+        // TODO: исключение!
         if(id < 0)
             return null;
+
+        // TODO: setCurrentQoute;
+        // return getCurrentQuote()
 
         String quote = Utils.getGlobal(context).getSettings().getQuote();
         return new QuoteModel(quote, id);
@@ -48,7 +53,9 @@ public class MonitorQuotesRefactored {
 
     public void setNext() {
 
+        // TODO: костылики! В случае currentQuote = null должно быть исключение.
         if(currentQuote==null) {
+            // TODO: Зачем получать класс из контекста, когда ты и так в нем!
             QuoteModel quoteModel = Utils.getGlobal(context).getMonitorQuotesRefactored().getCurrentQuote();
             setCurrentQuote(quoteModel);
             if(currentQuote==null)
@@ -57,7 +64,6 @@ public class MonitorQuotesRefactored {
         QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().getNextQuote(currentQuote.getId());
         TraceUtils.LogInfo(nextQuote.getQuote());
         setCurrentQuote(nextQuote);
-
     }
 
     public void setPrev() {
@@ -70,7 +76,6 @@ public class MonitorQuotesRefactored {
         }
         QuoteModel prevQoute = Utils.getGlobal(context).getQuotesRepository().getPrevQuote(currentQuote.getId());
         setCurrentQuote(prevQoute);
-
     }
 
     public void setLast(QuoteModel quoteModel){
@@ -87,7 +92,6 @@ public class MonitorQuotesRefactored {
         }
         QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().deleteQuote(currentQuote.getId());
         setCurrentQuote(nextQuote);
-
     }
 
     private void setCurrentQuote(QuoteModel quote){
@@ -97,6 +101,6 @@ public class MonitorQuotesRefactored {
 
         currentQuote = quote;
         if(listener != null)
-            listener.onCurrentQuoteChanged(currentQuote,context);
+            listener.onCurrentQuoteChanged(currentQuote, context);
     }
 }
