@@ -36,6 +36,9 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
     @Override
     public void onSettingsChanged(String keyName, Context context) {
 
+        // TODO: Почему сделано по-разному. onSettingsChanged и onCurrentQuoteChanged.
+        // Логически это ж одно и то же!
+
         if (keyName.equals("listPref")) {
             TraceUtils.LogInfo("SettingsFragment listPref listener");
             Scheduler.scheduleUpdate(context);

@@ -90,6 +90,7 @@ public class MonitorQuotesRefactored {
             if(currentQuote==null)
                 return;
         }
+        // TODO: А если следующей квоты нет?
         QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().deleteQuote(currentQuote.getId());
         setCurrentQuote(nextQuote);
     }
