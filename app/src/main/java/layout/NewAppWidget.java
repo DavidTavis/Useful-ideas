@@ -35,14 +35,10 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
     @Override
     public void onSettingsChanged(String keyName, Context context) {
-        // TODO: Почему сделано по-разному. onSettingsChanged и onCurrentQuoteChanged.
-        // Логически это ж одно и то же!
-        // TODO: PavelSh
-        // Когда мы поменяли время автоматического обновления виджета, в ЛистПреф
-        // то мы должны перенастроить планировщик обновления, который вызовет
-        // процедуру обновления виджета updateAppWidget через время
-        // а если мы изменили текущую цитату то мы должны вызвать процедуру обновления
-        // виджета updateAppWidget сразу же
+        // TODO: тогда интерфейс метода scheduleUpdate странный. Должен содержать interval.
+        // Внутри использует  SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        // Почему интервал обновления называется listPref. И еще... не понятно что происходт по интервалу. ОБновление?
+        // Или все-таки переключение на следующую цитату. Не понятно.
         if (keyName.equals("listPref")) {
             TraceUtils.LogInfo("SettingsFragment listPref listener");
             Scheduler.scheduleUpdate(context);
