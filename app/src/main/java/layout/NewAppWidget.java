@@ -35,10 +35,14 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
     @Override
     public void onSettingsChanged(String keyName, Context context) {
-
         // TODO: Почему сделано по-разному. onSettingsChanged и onCurrentQuoteChanged.
         // Логически это ж одно и то же!
-
+        // TODO: PavelSh
+        // Когда мы поменяли время автоматического обновления виджета, в ЛистПреф
+        // то мы должны перенастроить планировщик обновления, который вызовет
+        // процедуру обновления виджета updateAppWidget через время
+        // а если мы изменили текущую цитату то мы должны вызвать процедуру обновления
+        // виджета updateAppWidget сразу же
         if (keyName.equals("listPref")) {
             TraceUtils.LogInfo("SettingsFragment listPref listener");
             Scheduler.scheduleUpdate(context);
@@ -60,8 +64,8 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
     public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
         TraceUtils.LogInfo("updateAppWidget");
-        QuoteModel quoteModel = Utils.getGlobal(context).getMonitorQuotesRefactored().getCurrentQuote();
-        
+        QuoteModel quoteModel = Utils.getGlobal(context).getMonitorQuotes().getCurrentQuote();
+
         if(quoteModel == null)
             return;
 
@@ -126,8 +130,8 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
         super.onReceive(context, intent);
         TraceUtils.LogInfo("onReceive");
-        Utils.getGlobal(context).getSettings().setSettingsChangedListener(this);
-        Utils.getGlobal(context).getMonitorQuotesRefactored().setCurrentQuoteChangedListener(this);
+//        Utils.getGlobal(context).getSettings().setSettingsChangedListener(this);
+//        Utils.getGlobal(context).getMonitorQuotes().setCurrentQuoteChangedListener(this);
 
         //Обновление виджета по расписанию
         updateWidgetByScheduler(intent, context);
@@ -160,7 +164,7 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
     public void onEnabled(Context context) {
 
         Utils.getGlobal(context).getSettings().setSettingsChangedListener(this);
-        Utils.getGlobal(context).getMonitorQuotesRefactored().setCurrentQuoteChangedListener(this);
+        Utils.getGlobal(context).getMonitorQuotes().setCurrentQuoteChangedListener(this);
 
         TraceUtils.LogInfo("onEnabled");
         Scheduler.scheduleUpdate(context);
@@ -176,27 +180,31 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         Scheduler.clearUpdate(context);
     }
 
-    private void handleButtonClick(Intent intent, Context mContext){
+    private void handleButtonClick(Intent intent, Context context){
 
         // определяем сигнал установленный в ringtone preferences и признак его использования
-        Uri uri = Uri.parse(Utils.getGlobal(mContext).getSettings().getRingtone());
-        Boolean useSound = Utils.getGlobal(mContext).getSettings().getUseSound();
+        Uri uri = Uri.parse(Utils.getGlobal(context).getSettings().getRingtone());
+        Boolean useSound = Utils.getGlobal(context).getSettings().getUseSound();
 
         String str = intent.getStringExtra(KEY_UPDATE);
 
-        if(str==null) return;
+        if(str==null)
+            return;
 
+        if (useSound) {
+            Utils.playSound(context, uri);
+        }
         switch (str) {
             case (NEXT_CLICKED):
-                nextQuote(mContext, useSound, uri);
+                nextQuote(context, useSound, uri);
                 break;
 
             case (PREV_CLICKED):
-                prevQuote(mContext, useSound, uri);
+                prevQuote(context, useSound, uri);
                 break;
 
             case (DELETE_QUOTE):
-                deleteQuote(mContext, useSound, uri);
+                deleteQuote(context, useSound, uri);
                 break;
         }
 
@@ -204,30 +212,18 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
     public void nextQuote(Context context, Boolean useSound, Uri uri){
         TraceUtils.LogInfo("NEXT_CLICKED");
+        Utils.getGlobal(context).getMonitorQuotes().setNext();
 
-        Utils.getGlobal(context).getMonitorQuotesRefactored().setNext();
-        // TODO: У тебя музыка играет всегда при нажатии. Зачем каждый раз это делать. Если можно вынести в handleButtonClick.
-        if (useSound) {
-            Utils.playSound(context, uri);
-        }
     }
 
     public void prevQuote(Context context, Boolean useSound, Uri uri){
         TraceUtils.LogInfo("PREV_CLICKED");
-
-        Utils.getGlobal(context).getMonitorQuotesRefactored().setPrev();
-        if (useSound) {
-            Utils.playSound(context, uri);
-        }
+        Utils.getGlobal(context).getMonitorQuotes().setPrev();
     }
 
     public void deleteQuote(Context context, Boolean useSound, Uri uri){
-        TraceUtils.LogInfo("PREV_CLICKED");
-
-        Utils.getGlobal(context).getMonitorQuotesRefactored().deleteQuote();
-        if (useSound) {
-            Utils.playSound(context, uri);
-        }
+        TraceUtils.LogInfo("DELETE_QUOTE");
+        Utils.getGlobal(context).getMonitorQuotes().deleteQuote();
     }
 
     private void updateWidgetByScheduler(Intent intent, Context mContext) {

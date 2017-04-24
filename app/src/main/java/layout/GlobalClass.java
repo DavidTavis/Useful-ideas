@@ -2,7 +2,6 @@ package layout;
 
 import android.app.Application;
 
-import layout.MonitorQuotesRefactored;
 import layout.repository.QuotesRepository;
 import layout.settings.Settings;
 
@@ -13,7 +12,7 @@ import layout.settings.Settings;
 public class GlobalClass extends Application {
 
     private QuotesRepository quotesRepository;
-    private MonitorQuotesRefactored monitorQuotesRefactored;
+    private MonitorQuotes monitorQuotes;
     private Settings settings;
 
     public Settings getSettings() {
@@ -24,12 +23,12 @@ public class GlobalClass extends Application {
         return settings;
     }
 
-    public MonitorQuotesRefactored getMonitorQuotesRefactored() {
+    public MonitorQuotes getMonitorQuotes() {
 
-        if (monitorQuotesRefactored == null) {
-            monitorQuotesRefactored = new MonitorQuotesRefactored(this);
+        if (monitorQuotes == null) {
+            monitorQuotes = new MonitorQuotes(this);
         }
-        return monitorQuotesRefactored;
+        return monitorQuotes;
     }
 
     public QuotesRepository getQuotesRepository() {

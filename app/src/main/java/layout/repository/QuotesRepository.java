@@ -71,6 +71,7 @@ public class QuotesRepository {
         SQLiteDatabase db = sqlite.getWritableDatabase();
 
         boolean quoteIsExists = isQuoteExists(quote);
+        // TODO PavelSh если добавляем цитату которая уже есть, приложение падает изза Исключения
         if(quoteIsExists)
             throw new InvalidParameterException("Quote already exists.");
 
@@ -94,6 +95,7 @@ public class QuotesRepository {
             return getFirstQuote();
         }
         return getQuoteModelByCursorFirst(cursor);
+
     }
 
     public QuoteModel getPrevQuote(long currentQuoteId) {
@@ -103,21 +105,16 @@ public class QuotesRepository {
             TraceUtils.LogInfo("IsAfterLast");
             return getLastQuote();
         }
-
         return getQuoteModelByCursorLast(cursor);
 
     }
 
-    public QuoteModel deleteQuote(long id){
-
-        QuoteModel nextQuote = getNextQuote(id);
+    public void deleteQuote(long id){
 
         SQLiteDatabase db = sqlite.getWritableDatabase();
         String query = String.format("DELETE FROM %s WHERE _id = %s;", TABLE_NAME, id);
         db.execSQL(query);
 
-        // TODO: не должен этот метод возвращать next qoute.
-        return nextQuote;
     }
 
     public QuoteModel getFirstQuote(){
@@ -150,12 +147,11 @@ public class QuotesRepository {
     }
 
     public int getTableSize(){
-        TraceUtils.LogInfo("SQLite getTableSize");
-
         SQLiteDatabase db = sqlite.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
         int count = cursor.getCount();
         cursor.close();
+        TraceUtils.LogInfo("TABLE SIZE = " + count);
         return count;
     }
 

@@ -74,7 +74,7 @@ public class ShareOnFacebook extends FragmentActivity {
 
     public void shareMessageToFacebook() {
 
-        String quote = ((GlobalClass)getApplicationContext()).getMonitorQuotesRefactored().getCurrentQuote().getQuote();
+        String quote = ((GlobalClass)getApplicationContext()).getMonitorQuotes().getCurrentQuote().getQuote();
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             ShareLinkContent linkContent = new ShareLinkContent.Builder()
                     .setContentTitle("Your Rules")
