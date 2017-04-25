@@ -35,6 +35,12 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
     @Override
     public void onSettingsChanged(String keyName, Context context) {
+
+        // TODO: тогда интерфейс метода scheduleUpdate странный. Должен содержать interval.
+        // Внутри использует  SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        // Почему интервал обновления называется listPref. И еще... не понятно что происходт по интервалу. ОБновление?
+        // Или все-таки переключение на следующую цитату. Не понятно.
+
         if (keyName.equals("listPref")) {
             TraceUtils.LogInfo("SettingsFragment listPref listener");
             Scheduler.scheduleUpdate(context);

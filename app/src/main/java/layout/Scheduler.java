@@ -16,6 +16,7 @@ import layout.utils.TraceUtils;
 public class Scheduler {
 
     public static void scheduleUpdate(Context context) {
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String interval = prefs.getString("listPref", "1");
 
@@ -29,6 +30,7 @@ public class Scheduler {
     }
 
     private static PendingIntent getAlarmIntent(Context context) {
+
         Intent intent = new Intent(context, NewAppWidget.class);
         intent.setAction(NewAppWidget.UPDATE_ALL_WIDGETS);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
@@ -36,6 +38,7 @@ public class Scheduler {
     }
 
     public static void clearUpdate(Context context) {
+
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(getAlarmIntent(context));
     }
