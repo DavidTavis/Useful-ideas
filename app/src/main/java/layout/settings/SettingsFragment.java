@@ -22,7 +22,7 @@ public class SettingsFragment extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
-        ListPreference listPreference = (ListPreference) findPreference("listPref");
+        ListPreference listPreference = (ListPreference) findPreference("interval");
         String defaultValue = listPreference.getValue();
         if(defaultValue==null){
             listPreference.setValueIndex(0);

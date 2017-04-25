@@ -20,7 +20,7 @@
     <ListPreference
         android:title="Update period  for widget"
         android:summary="%s"
-        android:key="listPref"
+        android:key="interval"
         android:entries="@array/listArray"
         android:entryValues="@array/listValues"/>
 

@@ -15,12 +15,9 @@ import layout.utils.TraceUtils;
 
 public class Scheduler {
 
-    public static void scheduleUpdate(Context context) {
+    public static void scheduleUpdate(Context context,String interval) {
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String interval = prefs.getString("listPref", "1");
-
-        TraceUtils.LogInfo(interval);
+        TraceUtils.LogInfo("Scheduler scheduleUpdate interval = " + interval);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long intervalMillis = Integer.parseInt(interval)*60*1000;
 

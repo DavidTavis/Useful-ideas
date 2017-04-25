@@ -41,9 +41,11 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         // Почему интервал обновления называется listPref. И еще... не понятно что происходт по интервалу. ОБновление?
         // Или все-таки переключение на следующую цитату. Не понятно.
 
-        if (keyName.equals("listPref")) {
-            TraceUtils.LogInfo("SettingsFragment listPref listener");
-            Scheduler.scheduleUpdate(context);
+        if (keyName.equals("interval")) {
+
+            String interval = ((GlobalClass)context.getApplicationContext()).getSettings().getInterval();
+            TraceUtils.LogInfo("NewAppWidget onSettingsChanged interval = " + interval);
+            Scheduler.scheduleUpdate(context,interval);
         }
     }
 
@@ -163,7 +165,8 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         Utils.getGlobal(context).getMonitorQuotes().setCurrentQuoteChangedListener(this);
 
         TraceUtils.LogInfo("onEnabled");
-        Scheduler.scheduleUpdate(context);
+        String interval = ((GlobalClass)context.getApplicationContext()).getSettings().getInterval();
+        Scheduler.scheduleUpdate(context,interval);
     }
 
     @Override
@@ -224,13 +227,13 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
     private void updateWidgetByScheduler(Intent intent, Context context) {
 
-        ((GlobalClass)context.getApplicationContext()).getMonitorQuotes().setNext();
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         //Обновление виджета по расписанию
         if (intent.getAction().equalsIgnoreCase(UPDATE_ALL_WIDGETS)) {
             ComponentName thisAppWidget = new ComponentName(context.getPackageName(), getClass().getName());
             int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
-
+            // следующая цитата
+            ((GlobalClass)context.getApplicationContext()).getMonitorQuotes().setNext();
             for (int appWidgetID : ids) {
                 NewAppWidget.updateAppWidget(context, appWidgetManager, appWidgetID);
             }

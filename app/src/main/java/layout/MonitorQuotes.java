@@ -3,6 +3,7 @@ package layout;
 import android.content.Context;
 
 import layout.models.QuoteModel;
+import layout.utils.NullQuoteException;
 import layout.utils.TraceUtils;
 import layout.utils.Utils;
 
@@ -36,11 +37,12 @@ public class MonitorQuotes {
 
 
         long id = Utils.getGlobal(context).getSettings().getQuoteId();
-        // TODO: PavelSh what exception should i choose?
-
         if (id < 0) {
-//            throw new NullPointerException("Current quote undefined");
-            return null;
+            try{
+                throw new NullQuoteException("Current quote undefined");
+            }catch (NullQuoteException e) {
+                return null;
+            }
         }
 
         String quote = Utils.getGlobal(context).getSettings().getQuote();

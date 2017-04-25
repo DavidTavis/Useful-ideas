@@ -14,9 +14,10 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     private static final String PREF_NAME = "com.example.david.PREFERENCE_FILE_KEY";
     private static final String QUOTE_ID = "quote_id",
-            QUOTE_TEXT = "quote_text",
-            RINGTONE = "ringtone",
-            USE_SOUND = "pref_sound_use";
+                                QUOTE_TEXT = "quote_text",
+                                RINGTONE = "ringtone",
+                                USE_SOUND = "pref_sound_use",
+                                INTERVAL = "interval";
 
     private Context context;
     private SharedPreferences sharedPref;
@@ -38,6 +39,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
         if(settingsChangedListener != null)
             settingsChangedListener.onSettingsChanged(key, context);
+        TraceUtils.LogInfo("onSharedPreferenceChanged key = " + key);
     }
 
     public String getQuote() {
@@ -65,11 +67,16 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     public String getRingtone() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getString("ringtone", "default ringtone");
+        return settings.getString(RINGTONE, "default ringtone");
     }
 
     public boolean getUseSound() {
         return sharedPref.getBoolean(USE_SOUND,true);
+    }
+
+    public String getInterval() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getString(INTERVAL, "5");
     }
 
     public void close()  {

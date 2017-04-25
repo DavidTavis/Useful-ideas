@@ -18,7 +18,8 @@ public class BootReceiver extends BroadcastReceiver {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, NewAppWidget.class));
         if (ids.length > 0) {
-            Scheduler.scheduleUpdate(context);
+            String interval = ((GlobalClass)context.getApplicationContext()).getSettings().getInterval();
+            Scheduler.scheduleUpdate(context,interval);
         }
     }
 }
