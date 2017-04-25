@@ -40,7 +40,7 @@ public class InfoActivity extends Activity {
 
                 QuotesRepository quotesRepositoryRefactored = Utils.getGlobal(context).getQuotesRepository();
                 MonitorQuotes monitorQuotes = Utils.getGlobal(context).getMonitorQuotes();
-                if (quotesRepositoryRefactored.getTableSize() == 0) {
+                if (quotesRepositoryRefactored.count() == 0) {
 
                     String[] quotes = context.getResources().getStringArray(R.array.array_quotes);
 

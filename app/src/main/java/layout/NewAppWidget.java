@@ -35,14 +35,6 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
     @Override
     public void onSettingsChanged(String keyName, Context context) {
-        // TODO: Почему сделано по-разному. onSettingsChanged и onCurrentQuoteChanged.
-        // Логически это ж одно и то же!
-        // TODO: PavelSh
-        // Когда мы поменяли время автоматического обновления виджета, в ЛистПреф
-        // то мы должны перенастроить планировщик обновления, который вызовет
-        // процедуру обновления виджета updateAppWidget через время
-        // а если мы изменили текущую цитату то мы должны вызвать процедуру обновления
-        // виджета updateAppWidget сразу же
         if (keyName.equals("listPref")) {
             TraceUtils.LogInfo("SettingsFragment listPref listener");
             Scheduler.scheduleUpdate(context);
@@ -130,8 +122,6 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
         super.onReceive(context, intent);
         TraceUtils.LogInfo("onReceive");
-//        Utils.getGlobal(context).getSettings().setSettingsChangedListener(this);
-//        Utils.getGlobal(context).getMonitorQuotes().setCurrentQuoteChangedListener(this);
 
         //Обновление виджета по расписанию
         updateWidgetByScheduler(intent, context);
@@ -196,47 +186,47 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         }
         switch (str) {
             case (NEXT_CLICKED):
-                nextQuote(context, useSound, uri);
+                nextQuote(context);
                 break;
 
             case (PREV_CLICKED):
-                prevQuote(context, useSound, uri);
+                prevQuote(context);
                 break;
 
             case (DELETE_QUOTE):
-                deleteQuote(context, useSound, uri);
+                deleteQuote(context);
                 break;
         }
 
     }
 
-    public void nextQuote(Context context, Boolean useSound, Uri uri){
+    public void nextQuote(Context context){
         TraceUtils.LogInfo("NEXT_CLICKED");
         Utils.getGlobal(context).getMonitorQuotes().setNext();
 
     }
 
-    public void prevQuote(Context context, Boolean useSound, Uri uri){
+    public void prevQuote(Context context){
         TraceUtils.LogInfo("PREV_CLICKED");
         Utils.getGlobal(context).getMonitorQuotes().setPrev();
     }
 
-    public void deleteQuote(Context context, Boolean useSound, Uri uri){
+    public void deleteQuote(Context context){
         TraceUtils.LogInfo("DELETE_QUOTE");
         Utils.getGlobal(context).getMonitorQuotes().deleteQuote();
     }
 
-    private void updateWidgetByScheduler(Intent intent, Context mContext) {
+    private void updateWidgetByScheduler(Intent intent, Context context) {
 
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+        ((GlobalClass)context.getApplicationContext()).getMonitorQuotes().setNext();
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         //Обновление виджета по расписанию
         if (intent.getAction().equalsIgnoreCase(UPDATE_ALL_WIDGETS)) {
-            ComponentName thisAppWidget = new ComponentName(mContext.getPackageName(), getClass().getName());
+            ComponentName thisAppWidget = new ComponentName(context.getPackageName(), getClass().getName());
             int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
 
-//            quotesRepositoryRefactored.nextQuote();
             for (int appWidgetID : ids) {
-                NewAppWidget.updateAppWidget(mContext, appWidgetManager, appWidgetID);
+                NewAppWidget.updateAppWidget(context, appWidgetManager, appWidgetID);
             }
         }
     }

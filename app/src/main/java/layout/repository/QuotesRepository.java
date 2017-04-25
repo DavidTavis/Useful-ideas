@@ -146,7 +146,7 @@ public class QuotesRepository {
         return new QuoteModel(cursor.getString(cursor.getColumnIndex(COLUMN_QUOTE)),cursor.getLong(cursor.getColumnIndex(_ID)));
     }
 
-    public int getTableSize(){
+    public int count(){
         SQLiteDatabase db = sqlite.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
         int count = cursor.getCount();

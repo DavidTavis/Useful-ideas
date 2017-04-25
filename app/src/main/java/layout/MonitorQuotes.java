@@ -3,7 +3,6 @@ package layout;
 import android.content.Context;
 
 import layout.models.QuoteModel;
-import layout.repository.QuotesRepository;
 import layout.utils.TraceUtils;
 import layout.utils.Utils;
 
@@ -54,7 +53,7 @@ public class MonitorQuotes {
     }
 
     public void setNext() {
-        int tableSize = ((GlobalClass) context).getQuotesRepository().getTableSize();
+        int tableSize = ((GlobalClass) context).getQuotesRepository().count();
         if(tableSize == 0) return;
 
         QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().getNextQuote(currentQuote.getId());
@@ -62,7 +61,7 @@ public class MonitorQuotes {
     }
 
     public void setPrev() {
-        int tableSize = ((GlobalClass) context).getQuotesRepository().getTableSize();
+        int tableSize = ((GlobalClass) context).getQuotesRepository().count();
         if(tableSize == 0) return;
 
         QuoteModel prevQuote = Utils.getGlobal(context).getQuotesRepository().getPrevQuote(currentQuote.getId());
@@ -70,10 +69,8 @@ public class MonitorQuotes {
     }
 
     public void deleteQuote(){
-        // TODO: А если следующей квоты нет?
-        // TODO: PavelSh it's my solution this issue
         long quoteIdForDeleting = currentQuote.getId();
-        int tableSize = ((GlobalClass) context).getQuotesRepository().getTableSize();
+        int tableSize = ((GlobalClass) context).getQuotesRepository().count();
         if(tableSize > 1) {
             setNext();
             Utils.getGlobal(context).getQuotesRepository().deleteQuote(quoteIdForDeleting);
