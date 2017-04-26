@@ -35,7 +35,7 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
     @Override
     public void onSettingsChanged(String keyName, Context context) {
-        
+
         if (keyName.equals("interval")) {
 
             String interval = ((GlobalClass)context.getApplicationContext()).getSettings().getInterval();

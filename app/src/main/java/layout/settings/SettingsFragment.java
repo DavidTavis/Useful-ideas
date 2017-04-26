@@ -1,5 +1,6 @@
 package layout.settings;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
@@ -14,10 +15,11 @@ import layout.utils.Utils;
  */
 
 public class SettingsFragment extends PreferenceFragment {
+    private Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
+        context = getActivity();
         super.onCreate(savedInstanceState);
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
@@ -34,14 +36,14 @@ public class SettingsFragment extends PreferenceFragment {
 
         TraceUtils.LogInfo("SettingsFragment onResume");
         super.onResume();
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(Utils.getGlobal(getContext()).getSettings());
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(Utils.getGlobal(context).getSettings());
     }
 
 
     @Override
     public void onPause() {
         TraceUtils.LogInfo("SettingsFragment onPause");
-        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(Utils.getGlobal(getContext()).getSettings());
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(Utils.getGlobal(context).getSettings());
         super.onPause();
     }
 }
