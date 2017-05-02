@@ -23,6 +23,6 @@ public class TraceUtils {
     }
 
     public static void Toast(Context context, String info){
-        Toast.makeText(context, info, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, info, Toast.LENGTH_SHORT).show();
     }
 }

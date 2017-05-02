@@ -1,6 +1,9 @@
 package layout;
 
 import android.app.Application;
+import android.widget.RemoteViews;
+
+import com.example.david.mywidgetnewattempt.R;
 
 import layout.repository.QuotesRepository;
 import layout.settings.Settings;
@@ -14,6 +17,7 @@ public class GlobalClass extends Application {
     private QuotesRepository quotesRepository;
     private MonitorQuotes monitorQuotes;
     private Settings settings;
+    private RemoteViews views;
 
     public Settings getSettings() {
 
@@ -39,4 +43,12 @@ public class GlobalClass extends Application {
         return quotesRepository;
     }
 
+    public RemoteViews getRemoteViews(){
+
+        if(views == null){
+            views = new RemoteViews(this.getPackageName(), R.layout.my_widget);
+        }
+
+        return views;
+    }
 }
