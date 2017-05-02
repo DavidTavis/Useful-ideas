@@ -1,6 +1,7 @@
 package layout;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import layout.models.QuoteModel;
 import layout.utils.NullQuoteException;
@@ -56,9 +57,15 @@ public class MonitorQuotes {
 
     public void setNext() {
         int tableSize = ((GlobalClass) context).getQuotesRepository().count();
-        if(tableSize == 0) return;
-
+        if(tableSize == 0) {
+            TraceUtils.Toast(context,"tableSize == 0");
+            return;
+        }
+        if(currentQuote == null){
+            currentQuote = getCurrentQuote();
+        }
         QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().getNextQuote(currentQuote.getId());
+        TraceUtils.LogInfo(nextQuote.getQuote());
         setCurrentQuote(nextQuote);
     }
 
@@ -92,8 +99,10 @@ public class MonitorQuotes {
         Utils.getGlobal(context).getSettings().setQuote(quote.getQuote());
 
         currentQuote = quote;
-        if(listener != null)
+        if(listener != null) {
             listener.onCurrentQuoteChanged(currentQuote, context);
-    }
+        }else
+            TraceUtils.LogInfo("listener = null");
+        }
 
 }

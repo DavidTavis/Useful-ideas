@@ -151,7 +151,7 @@ public class QuotesRepository {
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
         int count = cursor.getCount();
         cursor.close();
-        TraceUtils.LogInfo("TABLE SIZE = " + count);
+//        TraceUtils.LogInfo("TABLE SIZE = " + count);
         return count;
     }
 

@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
+import android.widget.Toast;
+
 import com.example.david.mywidgetnewattempt.R;
 
 import layout.settings.SettingsChangedListener;
@@ -61,13 +63,25 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         TraceUtils.LogInfo("updateAppWidget");
         QuoteModel quoteModel = Utils.getGlobal(context).getMonitorQuotes().getCurrentQuote();
 
-        if(quoteModel == null)
+        if(quoteModel == null){
+            TraceUtils.LogInfo("updateAppWidget quoteModel == null");
             return;
+        }
+
 
         widgetText = quoteModel.getQuote();
 
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.my_widget);
+        RemoteViews views = ((GlobalClass)context.getApplicationContext()).getRemoteViews();
         views.setTextViewText(R.id.appwidget_text, widgetText);
+
+        setHandlerButtons(context, views, appWidgetId);
+
+        // Обновляем виджет
+        appWidgetManager.updateAppWidget(appWidgetId, views);
+
+    }
+
+    public static void setHandlerButtons(Context context, RemoteViews views, int appWidgetId){
 
         // Конфигурационное активити
         Intent infoIntent = new Intent(context, InfoActivity.class);
@@ -115,8 +129,28 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         pIntent = PendingIntent.getBroadcast(context, VALUE_DEL, deleteIntent, 0);
         views.setOnClickPendingIntent(R.id.btnDelete, pIntent);
 
-        // Обновляем виджет
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+
+        // Устанавливаем себя слушателем Настроек и цитат
+        Utils.getGlobal(context).getSettings().setSettingsChangedListener(this);
+        Utils.getGlobal(context).getMonitorQuotes().setCurrentQuoteChangedListener(this);
+
+        TraceUtils.LogInfo("onEnabled");
+        TraceUtils.Toast(context,"onEnabled");
+        String interval = ((GlobalClass)context.getApplicationContext()).getSettings().getInterval();
+        Scheduler.scheduleUpdate(context,interval);
+
+//        RemoteViews views = ((GlobalClass)context.getApplicationContext()).getRemoteViews();
+//
+//        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+//        int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, NewAppWidget.class));
+//        for (int id: ids) {
+//            TraceUtils.Toast(context,"onEnabled setHandlerButtons");
+//            setHandlerButtons(context, views, id);
+//        }
 
     }
 
@@ -126,8 +160,13 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         super.onReceive(context, intent);
         TraceUtils.LogInfo("onReceive");
 
+        // Устанавливаем себя слушателем Настроек и цитат
+        Utils.getGlobal(context).getSettings().setSettingsChangedListener(this);
+        Utils.getGlobal(context).getMonitorQuotes().setCurrentQuoteChangedListener(this);
+
         //Обновление виджета по расписанию
         updateWidgetByScheduler(intent, context);
+
         //Обработка нажатия кнопок
         handleButtonClick(intent, context);
     }
@@ -151,17 +190,6 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         Utils.getGlobal(context).getSettings().close();
         // Очищаем таблицу и закрываем базу
         Utils.getGlobal(context).getQuotesRepository().close();
-    }
-
-    @Override
-    public void onEnabled(Context context) {
-
-        Utils.getGlobal(context).getSettings().setSettingsChangedListener(this);
-        Utils.getGlobal(context).getMonitorQuotes().setCurrentQuoteChangedListener(this);
-
-        TraceUtils.LogInfo("onEnabled");
-        String interval = ((GlobalClass)context.getApplicationContext()).getSettings().getInterval();
-        Scheduler.scheduleUpdate(context,interval);
     }
 
     @Override
@@ -190,14 +218,17 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         }
         switch (str) {
             case (NEXT_CLICKED):
+                TraceUtils.LogInfo("NEXT_CLICKED");
                 nextQuote(context);
                 break;
 
             case (PREV_CLICKED):
+                TraceUtils.LogInfo("PREV_CLICKED");
                 prevQuote(context);
                 break;
 
             case (DELETE_QUOTE):
+                TraceUtils.LogInfo("DELETE_QUOTE");
                 deleteQuote(context);
                 break;
         }
@@ -205,18 +236,15 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
     }
 
     public void nextQuote(Context context){
-        TraceUtils.LogInfo("NEXT_CLICKED");
         Utils.getGlobal(context).getMonitorQuotes().setNext();
 
     }
 
     public void prevQuote(Context context){
-        TraceUtils.LogInfo("PREV_CLICKED");
         Utils.getGlobal(context).getMonitorQuotes().setPrev();
     }
 
     public void deleteQuote(Context context){
-        TraceUtils.LogInfo("DELETE_QUOTE");
         Utils.getGlobal(context).getMonitorQuotes().deleteQuote();
     }
 
@@ -225,11 +253,13 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         //Обновление виджета по расписанию
         if (intent.getAction().equalsIgnoreCase(UPDATE_ALL_WIDGETS)) {
+
             ComponentName thisAppWidget = new ComponentName(context.getPackageName(), getClass().getName());
             int ids[] = appWidgetManager.getAppWidgetIds(thisAppWidget);
             // следующая цитата
             ((GlobalClass)context.getApplicationContext()).getMonitorQuotes().setNext();
             for (int appWidgetID : ids) {
+                TraceUtils.LogInfo("updateWidgetByScheduler");
                 NewAppWidget.updateAppWidget(context, appWidgetManager, appWidgetID);
             }
         }
