@@ -1,8 +1,6 @@
 package layout;
 
 import android.content.Context;
-import android.widget.Toast;
-
 import layout.models.QuoteModel;
 import layout.utils.NullQuoteException;
 import layout.utils.TraceUtils;

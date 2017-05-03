@@ -71,7 +71,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     }
 
     public boolean getUseSound() {
-        return sharedPref.getBoolean(USE_SOUND,true);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getBoolean(USE_SOUND,true);
     }
 
     public String getInterval() {
