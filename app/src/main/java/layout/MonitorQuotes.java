@@ -32,6 +32,7 @@ public class MonitorQuotes {
         TraceUtils.LogInfo("MonitorQuotes getCurrentQuote");
 
         if(currentQuote != null)
+        if(currentQuote != null)
             return currentQuote;
 
 
@@ -56,7 +57,6 @@ public class MonitorQuotes {
     public void setNext() {
         int tableSize = ((GlobalClass) context).getQuotesRepository().count();
         if(tableSize == 0) {
-            TraceUtils.Toast(context,"tableSize == 0");
             return;
         }
         if(currentQuote == null){
@@ -69,7 +69,13 @@ public class MonitorQuotes {
 
     public void setPrev() {
         int tableSize = ((GlobalClass) context).getQuotesRepository().count();
-        if(tableSize == 0) return;
+        if(tableSize == 0) {
+            return;
+        }
+
+        if(currentQuote == null){
+            currentQuote = getCurrentQuote();
+        }
 
         QuoteModel prevQuote = Utils.getGlobal(context).getQuotesRepository().getPrevQuote(currentQuote.getId());
         setCurrentQuote(prevQuote);

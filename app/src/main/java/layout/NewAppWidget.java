@@ -236,7 +236,6 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
     public void nextQuote(Context context){
         Utils.getGlobal(context).getMonitorQuotes().setNext();
-
     }
 
     public void prevQuote(Context context){

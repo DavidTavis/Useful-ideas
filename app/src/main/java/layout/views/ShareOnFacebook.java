@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.david.mywidgetnewattempt.R;
 import com.facebook.CallbackManager;
@@ -32,6 +33,7 @@ public class ShareOnFacebook extends FragmentActivity {
     private CallbackManager callbackManager;
     private LoginManager loginManager;
     private ShareDialog shareDialog;
+    private TextView textResult;
 
     public void onClickFinish(View v){
         finish();
@@ -40,7 +42,9 @@ public class ShareOnFacebook extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.share_facebook);
-        TraceUtils.LogInfo("ShareOnFacebook onCreate");
+
+        textResult = (TextView) findViewById(R.id.textResult);
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
@@ -54,19 +58,22 @@ public class ShareOnFacebook extends FragmentActivity {
             @Override
             public void onSuccess(LoginResult loginResult)
             {
+
                 shareMessageToFacebook();
+//                textResult.setText("You have shared current quote with friends on Facebook");
             }
 
             @Override
             public void onCancel()
             {
-                System.out.println("onCancel");
+                TraceUtils.LogInfo("ShareOnFacebook onCancel");
+//                textResult.setText("You refused to give a quote");
             }
 
             @Override
             public void onError(FacebookException exception)
             {
-                System.out.println("onError");
+                TraceUtils.LogInfo("ShareOnFacebook onError");
             }
         });
 
@@ -89,12 +96,14 @@ public class ShareOnFacebook extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        TraceUtils.LogInfo("ShareOnFacebook onResume");
         AppEventsLogger.activateApp(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        TraceUtils.LogInfo("ShareOnFacebook onPause");
         AppEventsLogger.deactivateApp(this);
     }
 
@@ -102,5 +111,6 @@ public class ShareOnFacebook extends FragmentActivity {
     protected void onActivityResult(int requestCode, int responseCode, Intent data) {
         super.onActivityResult(requestCode, responseCode, data);
         callbackManager.onActivityResult(requestCode, responseCode, data);
+        TraceUtils.LogInfo("ShareOnFacebook onActivityResult");
     }
 }
