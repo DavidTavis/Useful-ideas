@@ -55,6 +55,7 @@ public class MonitorQuotes {
     }
 
     public void setNext() {
+
         int tableSize = ((GlobalClass) context).getQuotesRepository().count();
         if(tableSize == 0) {
             return;
@@ -63,7 +64,10 @@ public class MonitorQuotes {
             currentQuote = getCurrentQuote();
         }
         QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().getNextQuote(currentQuote.getId());
-        TraceUtils.LogInfo(nextQuote.getQuote());
+
+        // write Log in File on external storage
+        ((GlobalClass)context).getLogFile().appendLog(nextQuote.getQuote());
+
         setCurrentQuote(nextQuote);
     }
 

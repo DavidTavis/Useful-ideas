@@ -1,5 +1,6 @@
 package layout.utils;
 
+import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,11 +16,13 @@ public class TraceUtils {
     public static void LogInfo(String text) {
 
         Log.d(LOG_TAG, text);
+
     }
 
     public static void LogError(String text) {
 
         Log.e(LOG_TAG, text);
+
     }
 
     public static void Toast(Context context, String info){
