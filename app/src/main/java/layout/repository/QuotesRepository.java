@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.widget.Toast;
 
 import java.security.InvalidParameterException;
 
@@ -39,7 +40,7 @@ public class QuotesRepository {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
             this.tableName = tableName;
-            TraceUtils.LogInfo("Create SQLiteHelper");
+            TraceUtils.logInfo("Create SQLiteHelper");
         }
 
         @Override
@@ -57,9 +58,9 @@ public class QuotesRepository {
 
         private void createDatabase(SQLiteDatabase db, String tableName) {
 
-            TraceUtils.LogInfo("Drop Database.");
+            TraceUtils.logInfo("Drop Database.");
             db.execSQL(String.format("DROP TABLE IF EXISTS %s;", TABLE_NAME));
-            TraceUtils.LogInfo("Create Database.");
+            TraceUtils.logInfo("Create Database.");
             String query = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT NOT NULL);", TABLE_NAME, _ID, COLUMN_QUOTE);
             db.execSQL(query);
 
@@ -71,9 +72,13 @@ public class QuotesRepository {
         SQLiteDatabase db = sqlite.getWritableDatabase();
 
         boolean quoteIsExists = isQuoteExists(quote);
-        // TODO PavelSh если добавляем цитату которая уже есть, приложение падает изза Исключения
-        if(quoteIsExists)
-            throw new InvalidParameterException("Quote already exists.");
+        if(quoteIsExists) {
+            try {
+                throw new InvalidParameterException("Quote already exists.");
+            } catch (InvalidParameterException e) {
+                TraceUtils.logInfo("Quote already exists");
+            }
+        }
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_QUOTE, quote);
@@ -102,7 +107,7 @@ public class QuotesRepository {
 
         Cursor cursor = getCursor(currentQuoteId, " < ?");
         if(cursor.isAfterLast()){
-            TraceUtils.LogInfo("IsAfterLast");
+            TraceUtils.logInfo("IsAfterLast");
             return getLastQuote();
         }
         return getQuoteModelByCursorLast(cursor);
@@ -119,7 +124,7 @@ public class QuotesRepository {
 
     public QuoteModel getFirstQuote(){
 
-        TraceUtils.LogInfo("SQLite getFirstQuote");
+        TraceUtils.logInfo("SQLite getFirstQuote");
 
         SQLiteDatabase db = sqlite.getReadableDatabase();
         String query = String.format("SELECT %s, MIN(%s) as _id  FROM %s", COLUMN_QUOTE, _ID, TABLE_NAME);;
@@ -129,7 +134,7 @@ public class QuotesRepository {
     }
 
     public void close(){
-        TraceUtils.LogInfo("SQLite clearTable");
+        TraceUtils.logInfo("SQLite clearTable");
         SQLiteDatabase db = sqlite.getWritableDatabase();
         db.delete(TABLE_NAME,null,null);
         sqlite.close();
@@ -137,7 +142,7 @@ public class QuotesRepository {
 
     public QuoteModel getLastQuote(){
 
-        TraceUtils.LogInfo("SQLite getLastQuote");
+        TraceUtils.logInfo("SQLite getLastQuote");
         SQLiteDatabase db = sqlite.getReadableDatabase();
         String query = String.format("SELECT %s, MAX(%s) as _id  FROM %s", COLUMN_QUOTE, _ID, TABLE_NAME);
         Cursor cursor = db.rawQuery(query,null);
@@ -151,7 +156,7 @@ public class QuotesRepository {
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
         int count = cursor.getCount();
         cursor.close();
-//        TraceUtils.LogInfo("TABLE SIZE = " + count);
+//        TraceUtils.logInfo("TABLE SIZE = " + count);
         return count;
     }
 

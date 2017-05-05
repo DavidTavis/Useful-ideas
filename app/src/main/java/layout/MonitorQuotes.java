@@ -29,7 +29,7 @@ public class MonitorQuotes {
 
     public QuoteModel getCurrentQuote(){
 
-        TraceUtils.LogInfo("MonitorQuotes getCurrentQuote");
+        TraceUtils.logInfo("MonitorQuotes getCurrentQuote");
 
         if(currentQuote != null)
         if(currentQuote != null)
@@ -65,9 +65,6 @@ public class MonitorQuotes {
         }
         QuoteModel nextQuote = Utils.getGlobal(context).getQuotesRepository().getNextQuote(currentQuote.getId());
 
-        // write Log in File on external storage
-        ((GlobalClass)context).getLogFile().appendLog(nextQuote.getQuote());
-
         setCurrentQuote(nextQuote);
     }
 
@@ -86,7 +83,13 @@ public class MonitorQuotes {
     }
 
     public void deleteQuote(){
+
+        if(currentQuote == null){
+            currentQuote = getCurrentQuote();
+        }
+
         long quoteIdForDeleting = currentQuote.getId();
+
         int tableSize = ((GlobalClass) context).getQuotesRepository().count();
         if(tableSize > 1) {
             setNext();
@@ -110,7 +113,7 @@ public class MonitorQuotes {
         if(listener != null) {
             listener.onCurrentQuoteChanged(currentQuote, context);
         }else
-            TraceUtils.LogInfo("listener = null");
+            TraceUtils.logInfo("listener = null");
         }
 
 }

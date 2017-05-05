@@ -33,7 +33,7 @@ public class Utils {
                 mMediaPlayer.start();
             }
         } catch (IOException e) {
-            TraceUtils.LogInfo("No Sound exception");
+            TraceUtils.logInfo("No Sound exception");
         }
     }
 

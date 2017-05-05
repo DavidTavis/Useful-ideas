@@ -7,7 +7,6 @@ import com.example.david.mywidgetnewattempt.R;
 
 import layout.repository.QuotesRepository;
 import layout.settings.Settings;
-import layout.utils.LogFile;
 
 /**
  * Created by TechnoA on 17.04.2017.
@@ -19,7 +18,6 @@ public class GlobalClass extends Application {
     private MonitorQuotes monitorQuotes;
     private Settings settings;
     private RemoteViews views;
-    private LogFile logFile;
 
     public Settings getSettings() {
 
@@ -52,13 +50,6 @@ public class GlobalClass extends Application {
         }
 
         return views;
-    }
-
-    public LogFile getLogFile(){
-        if(logFile == null){
-            logFile = new LogFile(this);
-        }
-        return logFile;
     }
 
 }

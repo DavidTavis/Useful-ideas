@@ -39,7 +39,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
         if(settingsChangedListener != null)
             settingsChangedListener.onSettingsChanged(key, context);
-        TraceUtils.LogInfo("onSharedPreferenceChanged key = " + key);
+        TraceUtils.logInfo("onSharedPreferenceChanged key = " + key);
     }
 
     public String getQuote() {
@@ -82,7 +82,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     public void close()  {
 
-        TraceUtils.LogInfo("Settings deleteTitlePref");
+        TraceUtils.logInfo("Settings deleteTitlePref");
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREF_NAME, 0).edit();
         prefs.remove(QUOTE_ID);
         prefs.remove(QUOTE_TEXT);

@@ -34,7 +34,7 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onResume() {
 
-        TraceUtils.LogInfo("SettingsFragment onResume");
+        TraceUtils.logInfo("SettingsFragment onResume");
         super.onResume();
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(Utils.getGlobal(context).getSettings());
     }
@@ -42,7 +42,7 @@ public class SettingsFragment extends PreferenceFragment {
 
     @Override
     public void onPause() {
-        TraceUtils.LogInfo("SettingsFragment onPause");
+        TraceUtils.logInfo("SettingsFragment onPause");
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(Utils.getGlobal(context).getSettings());
         super.onPause();
     }

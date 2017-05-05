@@ -66,14 +66,14 @@ public class ShareOnFacebook extends FragmentActivity {
             @Override
             public void onCancel()
             {
-                TraceUtils.LogInfo("ShareOnFacebook onCancel");
+                TraceUtils.logInfo("ShareOnFacebook onCancel");
 //                textResult.setText("You refused to give a quote");
             }
 
             @Override
             public void onError(FacebookException exception)
             {
-                TraceUtils.LogInfo("ShareOnFacebook onError");
+                TraceUtils.logInfo("ShareOnFacebook onError");
             }
         });
 
@@ -96,14 +96,14 @@ public class ShareOnFacebook extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        TraceUtils.LogInfo("ShareOnFacebook onResume");
+        TraceUtils.logInfo("ShareOnFacebook onResume");
         AppEventsLogger.activateApp(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        TraceUtils.LogInfo("ShareOnFacebook onPause");
+        TraceUtils.logInfo("ShareOnFacebook onPause");
         AppEventsLogger.deactivateApp(this);
     }
 
@@ -111,6 +111,6 @@ public class ShareOnFacebook extends FragmentActivity {
     protected void onActivityResult(int requestCode, int responseCode, Intent data) {
         super.onActivityResult(requestCode, responseCode, data);
         callbackManager.onActivityResult(requestCode, responseCode, data);
-        TraceUtils.LogInfo("ShareOnFacebook onActivityResult");
+        TraceUtils.logInfo("ShareOnFacebook onActivityResult");
     }
 }

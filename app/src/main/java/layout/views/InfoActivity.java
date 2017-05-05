@@ -70,7 +70,7 @@ public class InfoActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        TraceUtils.LogInfo("InfoActivity onCreate");
+        TraceUtils.logInfo("InfoActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info);
 
