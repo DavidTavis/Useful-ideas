@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.david.mywidgetnewattempt.R;
+import com.app.david.mywidget.R;
 
 import layout.MonitorQuotes;
 import layout.NewAppWidget;

@@ -3,7 +3,7 @@ package layout;
 import android.app.Application;
 import android.widget.RemoteViews;
 
-import com.example.david.mywidgetnewattempt.R;
+import com.app.david.mywidget.R;
 
 import layout.repository.QuotesRepository;
 import layout.settings.Settings;

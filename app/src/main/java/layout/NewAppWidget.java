@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.example.david.mywidgetnewattempt.R;
+import com.app.david.mywidget.R;
 
 import layout.settings.SettingsChangedListener;
 import layout.utils.TraceUtils;
@@ -142,15 +142,6 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
         TraceUtils.toast(context,"onEnabled");
         String interval = ((GlobalClass)context.getApplicationContext()).getSettings().getInterval();
         Scheduler.scheduleUpdate(context,interval);
-
-//        RemoteViews views = ((GlobalClass)context.getApplicationContext()).getRemoteViews();
-//
-//        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-//        int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, NewAppWidget.class));
-//        for (int id: ids) {
-//            TraceUtils.toast(context,"onEnabled setHandlerButtons");
-//            setHandlerButtons(context, views, id);
-//        }
 
     }
 

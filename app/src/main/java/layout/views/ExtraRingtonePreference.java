@@ -17,7 +17,7 @@ import android.net.Uri;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
-import com.example.david.mywidgetnewattempt.R;
+import com.app.david.mywidget.R;
 
 public class ExtraRingtonePreference extends DialogPreference {
 

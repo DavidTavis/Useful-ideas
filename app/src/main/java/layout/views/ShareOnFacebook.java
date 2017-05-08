@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.david.mywidgetnewattempt.R;
+import com.app.david.mywidget.R;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -85,9 +85,9 @@ public class ShareOnFacebook extends FragmentActivity {
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             ShareLinkContent linkContent = new ShareLinkContent.Builder()
                     .setContentTitle("Your Rules")
-                    .setImageUrl(Uri.parse("http://ipic.su/img/img7/fs/S70331-030256_1.1490977198.jpg"))
+                    .setImageUrl(Uri.parse("http://ipic.su/img/img7/fs/vivid_ideas_icon.1494276204.jpg"))
                     .setContentDescription(quote)
-                    .setContentUrl(Uri.parse("https://drive.google.com/open?id=0B-MrVh-HoJ8qUVZZUjkzOUlxLVk"))
+                    .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.app.david.mywidget"))
                     .build();
             shareDialog.show(linkContent);
         }

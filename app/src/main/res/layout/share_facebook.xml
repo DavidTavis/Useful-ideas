@@ -4,16 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="#EA80FC"
+    android:background="#e9c4f5"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/icon_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="160dp"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/vivid_ideas" />
     <TextView
         android:id="@+id/textResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        tools:text="You have shared current quote with friends on Facebook "/>
+        tools:text="You have shared current idea  with friends on Facebook "/>
     <Button
         android:id="@+id/btnCancle"
         android:layout_below="@+id/textResult"

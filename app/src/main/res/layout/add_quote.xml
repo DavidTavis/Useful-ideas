@@ -9,17 +9,25 @@
         android:id="@+id/viewB"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#EA80FC"
+        android:background="#e9c4f5"
         android:orientation="vertical"
-        android:padding="16dp">
+        >
+
+        <ImageView
+            android:id="@+id/icon_widget"
+            android:layout_width="wrap_content"
+            android:layout_height="160dp"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/vivid_ideas" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:layout_marginBottom="8dp"
             android:text="@string/configure"
             android:textColor="#424242"
-            android:textSize="20dp" />
+            android:textSize="17dp" />
 
         <EditText
             android:id="@+id/quote"

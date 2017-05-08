@@ -51,18 +51,18 @@
     </string-array>
 
     <string name="facebook_app_id">1695094564116509</string>
-    <string name="app_name">Your Rules</string>
-    <string name="appwidget_text">IDEAS</string>
-    <string name="configure">Please, type your rules</string>
+    <string name="app_name">Vivid Ideas</string>
+    <string name="appwidget_text">Vivid ideas</string>
+    <string name="configure">Please, type your idea</string>
     <string name="add_widget">Add idea</string>
     <string name="Next">next</string>
     <string name="pref_name">com.example.david.PREFERENCE_FILE_KEY</string>
-    <string name="about_title">Add new quote</string>
+    <string name="about_title">Add new idea</string>
     <string name="pref_sound_use">Sound</string>
     <string name="pref_sync_summ">Use sound</string>
     <string name="pref_sound_category">Button sounds</string>
 
-    <string name="description"> Your rules - это приложение-виджет, которое содержит определенный набор тезисов. Приложение позволяет просматривать тезисы (кнопками вправо, влево), добавлять новые тезисы (кнопка +), и удалять существующие (кнопка -). Также возможно поделиться понравившемся тезисом с друзьями в Facebook.\n </string>
+    <string name="description"> Vivid ideas - яркие идеи. Добавляй свои новые идеи и они навсегда остануться с тобой, а также делись ими с друзьями в Facebook. Это приложение, поможет не забывать тебе твои лучшие идеи, они будут вседа под рукой, непосредственно на экране твоего смартфона. Приложение позволяет просматривать идеи, добавлять новые, и удалять существующие. \n </string>
 
 
     <string-array name="array_quotes">

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 
-import com.example.david.mywidgetnewattempt.R;
+import com.app.david.mywidget.R;
 
 import layout.utils.TraceUtils;
 import layout.utils.Utils;
@@ -27,7 +27,7 @@ public class SettingsFragment extends PreferenceFragment {
         ListPreference listPreference = (ListPreference) findPreference("interval");
         String defaultValue = listPreference.getValue();
         if(defaultValue==null){
-            listPreference.setValueIndex(0);
+            listPreference.setValueIndex(5);
         }
     }
 

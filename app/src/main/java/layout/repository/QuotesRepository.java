@@ -74,9 +74,9 @@ public class QuotesRepository {
         boolean quoteIsExists = isQuoteExists(quote);
         if(quoteIsExists) {
             try {
-                throw new InvalidParameterException("Quote already exists.");
+                throw new InvalidParameterException("This idea already exists.");
             } catch (InvalidParameterException e) {
-                TraceUtils.logInfo("Quote already exists");
+                TraceUtils.logInfo("This idea already exists");
             }
         }
 

@@ -77,7 +77,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     public String getInterval() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getString(INTERVAL, "5");
+        return settings.getString(INTERVAL, "60");
     }
 
     public void close()  {

@@ -21,7 +21,7 @@ public class TraceUtils {
     public static void logInfo(String text) {
 
         Log.d(LOG_TAG, text);
-        appendLogToFile(text);
+//        appendLogToFile(text);
 
     }
 

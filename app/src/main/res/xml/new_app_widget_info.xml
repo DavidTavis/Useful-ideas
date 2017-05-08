@@ -5,7 +5,7 @@
     android:initialLayout="@layout/my_widget"
     android:minHeight="80dp"
     android:minWidth="250dp"
-    android:previewImage="@drawable/your_rules"
+    android:previewImage="@drawable/vivid_ideas_icon"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0"
     android:widgetCategory="home_screen"></appwidget-provider>

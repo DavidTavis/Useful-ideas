@@ -1,4 +1,4 @@
-package com.example.david.mywidgetnewattempt;
+package com.app.david.mywidget;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

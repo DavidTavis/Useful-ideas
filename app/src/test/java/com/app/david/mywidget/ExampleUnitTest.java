@@ -1,4 +1,4 @@
-package com.example.david.mywidgetnewattempt;
+package com.app.david.mywidget;
 
 import org.junit.Test;
 
