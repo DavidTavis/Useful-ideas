@@ -236,7 +236,7 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
     public void deleteQuote(Context context){
         Utils.getGlobal(context).getMonitorQuotes().deleteQuote();
-        Toast.makeText(context, "You deleted current thesis", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "You deleted current idea", Toast.LENGTH_SHORT).show();
     }
 
     private void updateWidgetByScheduler(Intent intent, Context context) {

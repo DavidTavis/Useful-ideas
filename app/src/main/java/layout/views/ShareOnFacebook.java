@@ -84,9 +84,7 @@ public class ShareOnFacebook extends FragmentActivity {
         String quote = ((GlobalClass)getApplicationContext()).getMonitorQuotes().getCurrentQuote().getQuote();
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                    .setContentTitle("Your Rules")
-                    .setImageUrl(Uri.parse("http://ipic.su/img/img7/fs/vivid_ideas_icon.1494276204.jpg"))
-                    .setContentDescription(quote)
+                    .setQuote(quote)
                     .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.app.david.mywidget"))
                     .build();
             shareDialog.show(linkContent);
