@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.TypedValue;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -44,6 +45,14 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
             TraceUtils.logInfo("NewAppWidget onSettingsChanged interval = " + interval);
             Scheduler.scheduleUpdate(context,interval);
         }
+
+        if(keyName.equals("fontSize")){
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, NewAppWidget.class));
+            for (int id: ids) {
+                updateAppWidget(context, appWidgetManager, id);
+            }
+        }
     }
 
     @Override
@@ -70,9 +79,11 @@ public class NewAppWidget extends AppWidgetProvider implements SettingsChangedLi
 
 
         widgetText = quoteModel.getQuote();
+        String fontSize = ((GlobalClass)context.getApplicationContext()).getSettings().getFontSize();
 
         RemoteViews views = ((GlobalClass)context.getApplicationContext()).getRemoteViews();
         views.setTextViewText(R.id.appwidget_text, widgetText);
+        views.setTextViewTextSize(R.id.appwidget_text, TypedValue.COMPLEX_UNIT_DIP,Integer.valueOf(fontSize));
 
         setHandlerButtons(context, views, appWidgetId);
 

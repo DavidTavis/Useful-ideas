@@ -18,6 +18,7 @@ public class Utils {
     public static GlobalClass getGlobal(Context context) {
 
         return (GlobalClass)context.getApplicationContext();
+
     }
 
     public static void playSound(Context context, Uri alert) {

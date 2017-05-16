@@ -23,5 +23,12 @@
         android:key="interval"
         android:entries="@array/listArray"
         android:entryValues="@array/listValues"/>
+    <ListPreference
+        android:title="Font size"
+        android:summary="%s"
+        android:key="fontSize"
+        android:entries="@array/fontSizeArray"
+        android:entryValues="@array/valueFontSizeArray">
+    </ListPreference>
 
 </PreferenceScreen>

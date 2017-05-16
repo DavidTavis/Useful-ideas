@@ -24,10 +24,16 @@ public class SettingsFragment extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
-        ListPreference listPreference = (ListPreference) findPreference("interval");
-        String defaultValue = listPreference.getValue();
+        ListPreference timeUpdate = (ListPreference) findPreference("interval");
+        String defaultValue = timeUpdate.getValue();
         if(defaultValue==null){
-            listPreference.setValueIndex(5);
+            timeUpdate.setValueIndex(5);
+        }
+
+        ListPreference fontSize = (ListPreference) findPreference("fontSize");
+        String fontSizeValue = fontSize.getValue();
+        if(fontSizeValue==null){
+            fontSize.setValueIndex(3);
         }
     }
 

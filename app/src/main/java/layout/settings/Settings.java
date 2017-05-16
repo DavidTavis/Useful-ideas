@@ -17,7 +17,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
                                 QUOTE_TEXT = "quote_text",
                                 RINGTONE = "ringtone",
                                 USE_SOUND = "pref_sound_use",
-                                INTERVAL = "interval";
+                                INTERVAL = "interval",
+                                FONT_SIZE = "fontSize";
 
     private Context context;
     private SharedPreferences sharedPref;
@@ -78,6 +79,11 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     public String getInterval() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getString(INTERVAL, "60");
+    }
+
+    public String getFontSize() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        return settings.getString(FONT_SIZE, "13");
     }
 
     public void close()  {

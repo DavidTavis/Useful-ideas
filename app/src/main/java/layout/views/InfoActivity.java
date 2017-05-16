@@ -107,7 +107,7 @@ public class InfoActivity extends Activity {
         int[] ids = AppWidgetManager.getInstance(getApplicationContext()).getAppWidgetIds(new ComponentName(getApplicationContext(), NewAppWidget.class));
 
         if (ids.length > 1) {
-            Toast.makeText(getApplicationContext(), "Widget already exist" + ids.length, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Widget already exist", Toast.LENGTH_SHORT).show();
             finish();
             return true;
         }else
