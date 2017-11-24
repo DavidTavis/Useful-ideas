@@ -9,7 +9,7 @@
 ## Description
 
 ```bash
-Desktop widget with some theses, ideas.
+The Android screen widget with some theses, ideas.
 In this project, I developed an Android home screen widget. The widget contains a certain set 
 of my life rules (ideas). The application allows you to share the ideas in Facebook and add new ideas, 
 delete existing ones.It is also possible to adjust the key sound or turn it off 
